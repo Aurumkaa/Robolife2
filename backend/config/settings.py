@@ -33,7 +33,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # CORS Policy
-CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
     'http://localhost',

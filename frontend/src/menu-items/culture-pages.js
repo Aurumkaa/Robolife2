@@ -17,7 +17,7 @@ const culturePages = {
     children: [
         {
             id: 'culture',
-            title: 'Культуры',
+            title: 'Осадки',
             type: 'item',
             url: '/culture',
             icon: icons.GiCorn

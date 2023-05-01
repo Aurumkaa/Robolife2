@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../../../src/assets/scss/hero-page.scss';
 import hero from 'assets/images/hero-card/hero-page_fullhero.png';
 import { Button } from 'rsuite';
 import GithubIcon from '@rsuite/icons/legacy/Github';
+import useScript from '../../hooks/useScript';
+import { Helmet } from 'react-helmet';
 
 const HeroCard = () => {
     return (

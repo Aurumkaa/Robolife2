@@ -77,6 +77,13 @@ const fieldClimateAPI = {
             body: JSON.stringify(editData)
         };
         return fieldClimateAPI.getFetch(params);
+    },
+    getLastParams(stationId = '00001F76') {
+        let params = {
+            method: 'GET',
+            request: '/data/' + stationId + '/hourly/last/1'
+        };
+        return fieldClimateAPI.getFetch(params);
     }
 };
 

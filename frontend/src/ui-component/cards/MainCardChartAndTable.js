@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
-import { ButtonGroup, IconButton, SelectPicker } from 'rsuite';
+import { ButtonGroup, IconButton, Message, SelectPicker } from 'rsuite';
 import EditIcon from '@rsuite/icons/Edit';
 import CloseIcon from '@rsuite/icons/Close';
 import CheckIcon from '@rsuite/icons/Check';
@@ -36,8 +36,32 @@ const MainCardChartAndTable = ({
     const [editMode, setEditMode] = useState(false);
     const [tableMode, setTableMode] = useState(false);
     const [culture, setCulture] = useState(null);
-
+    const [result, setResult] = useState({ type_msg: null, msg: null });
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (culture) {
+            var min_lvl = cultureList?.find((value) => value.name === culture).min_permissible_precipitation_level;
+            var max_lvl = cultureList?.find((value) => value.name === culture).max_permissible_precipitation_level;
+            var fact_lvl = chartData.at(-1).increaseCountPrecipitation;
+            if (fact_lvl < min_lvl) {
+                setResult({
+                    msg: `Для выбранной вами культуры (${culture.toLowerCase()}) за выбранный период времени выпало недостаточное количество осадков`,
+                    type_msg: 'warning'
+                });
+            } else if (fact_lvl > max_lvl) {
+                setResult({
+                    msg: `Для выбранной вами культуры (${culture.toLowerCase()}) за выбранный период времени переизбыток осадков`,
+                    type_msg: 'warning'
+                });
+            } else {
+                setResult({
+                    msg: `Для выбранной вами культуры (${culture.toLowerCase()}) за выбранный период времени выпало достаточное количество осадков`,
+                    type_msg: 'success'
+                });
+            }
+        }
+    }, [culture, chartData]);
 
     const handleVegetationPeriod = () => {
         if (culture)
@@ -131,6 +155,7 @@ const MainCardChartAndTable = ({
             ) : (
                 <DataTable tableData={tableData} setTableData={setTableData} editMode={editMode} columnNames={columnNames} />
             )}
+            {cultureList?.find((value) => value.name === culture) ? <Message type={result.type_msg}>{result.msg}</Message> : null}
         </MainCard>
     );
 };
