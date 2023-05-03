@@ -1,17 +1,18 @@
 // assets
-import { GiCorn, GiGooeyMolecule } from 'react-icons/gi';
+import { GiCorn, GiGooeyMolecule, GiChemicalDrop } from 'react-icons/gi';
 
 // constant
 const icons = {
     GiCorn,
-    GiGooeyMolecule
+    GiGooeyMolecule,
+    GiChemicalDrop
 };
 
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
 
 const culturePages = {
     id: 'pages',
-    title: 'Культуры',
+    title: '',
     caption: '',
     type: 'group',
     children: [
@@ -28,6 +29,13 @@ const culturePages = {
             type: 'item',
             url: '/culture/culture-diseases',
             icon: icons.GiGooeyMolecule
+        },
+        {
+            id: 'chemical-treatments',
+            title: 'Химические обработки',
+            type: 'item',
+            url: '/chemical-treatments',
+            icon: icons.GiChemicalDrop
         }
     ]
 };

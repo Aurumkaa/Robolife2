@@ -1,0 +1,145 @@
+.our-client {
+  width: 100%;
+  background-color: #5a98d0;
+  border-radius: 200px 0 0 0;
+  height: auto;
+  z-index: 1;
+  padding-bottom: 90px;
+
+  &__logo {
+    width: 90px;
+    height: 90px;
+    transition: 0.5s;
+
+    &:hover {
+      transform: scale(1.2); /* Увеличиваем масштаб */
+    }
+  }
+  // .our-client__container
+
+  &__container {
+    max-width: 1130px;
+    margin: 0 auto;
+    padding-top: 2em;
+  }
+
+  // .our-client__logos
+
+  &__logos {
+    margin-top: 100px;
+    display: grid;
+    grid-row-gap: 1px;
+    grid-column-gap: 1px;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 128px);
+    align-items: center;
+    justify-items: center;
+    color: #f2f2f2;
+    background-color: white;
+    .actives {
+      text-align: center;
+      align-items: center;
+      background: rgb(78, 134, 187);
+      a {
+        color: white;
+        text-decoration: none;
+        width: 100%;
+        height: 100%;
+        line-height: 128px;
+
+      }
+    }
+
+    div {
+      background-color: #5a98d0;
+      display: flex;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+    }
+  }
+
+  // .our-client__logo
+
+  &__head {
+    margin-top: 96px;
+    padding: 20px;
+    .content-head {
+      &__title {
+        color: white;
+        max-width: 232px;
+        font-family: "Gilroy";
+        font-size: 36px;
+        line-height: 46px;
+
+        /* or 128% */
+        letter-spacing: 0.05em;
+      }
+
+      // .finish-projects__text
+
+      &__text {
+        color: white;
+      }
+    }
+  }
+}
+.our-client__logos .actives:hover {
+  background: rgb(57, 99, 137);
+}
+.our-client__logos  .actives:hover a {
+  background: rgb(57, 99, 137);
+}
+
+@media (max-width: 801px) {
+  .our-client {
+    border-radius: 150px 0 0 0;
+    &__logos {
+      margin-top: 30px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: repeat(4, 90px);
+    }
+    .actives{
+      a{
+        line-height: 90px;
+      }
+    }
+    &__container {
+      width: 90%;
+    }
+    &__head {
+      margin-top: 30px;
+      .content-head {
+        &__title {
+          color: white;
+        }
+
+        // .finish-projects__text
+
+        &__text {
+          color: white;
+        }
+      }
+    }
+  }
+  .content-head {
+    display: block;
+    text-align: center;
+    &__title {
+      margin: 0 auto;
+      margin-bottom: 20px;
+
+      color: #1f3f68;
+    }
+
+    // .finish-projects__text
+
+    &__text {
+      color: #1f3f68;
+      font-size: 14px;
+    }
+  }
+}
