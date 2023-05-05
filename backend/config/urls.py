@@ -34,6 +34,7 @@ urlpatterns = [
     path('api/accounts/', include('components.accounts.urls')),
     path('api/metrics/', include('components.metrics.urls')),
     path('api/comments/', include('components.comments.urls')),
+    path('api/metric_changes/', include('components.metrics_changes.urls')),
     path('api/notifications/', include('components.notifications.urls')),
     path('api/agriculture/', include('components.agriculture.urls')),
     path('api/neural-network/', include('components.neural_network.urls')),

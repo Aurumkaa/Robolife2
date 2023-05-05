@@ -19,6 +19,8 @@ const buttonColor = {
 };
 
 const MainCardChartAndTable = ({
+    firstData,
+    setFirstData,
     title,
     subheader,
     tableData,
@@ -96,7 +98,12 @@ const MainCardChartAndTable = ({
                 {editable ? (
                     <Grid item>
                         {!editMode ? (
-                            <IconButton icon={<EditIcon />} onClick={() => setEditMode(true)}>
+                            <IconButton
+                                icon={<EditIcon />}
+                                onClick={() => {
+                                    setEditMode(true);
+                                }}
+                            >
                                 Редактировать данные
                             </IconButton>
                         ) : (
@@ -130,7 +137,13 @@ const MainCardChartAndTable = ({
                 <Grid item>
                     {!editMode ? (
                         <ButtonGroup>
-                            <IconButton style={tableMode ? buttonColor : null} icon={<TableIcon />} onClick={() => setTableMode(true)} />
+                            <IconButton
+                                style={tableMode ? buttonColor : null}
+                                icon={<TableIcon />}
+                                onClick={() => {
+                                    setTableMode(true);
+                                }}
+                            />
                             <IconButton
                                 style={!tableMode ? buttonColor : null}
                                 icon={<LineChartIcon />}
@@ -153,7 +166,13 @@ const MainCardChartAndTable = ({
                     range={cultureList?.find((value) => value.name === culture)}
                 />
             ) : (
-                <DataTable tableData={tableData} setTableData={setTableData} editMode={editMode} columnNames={columnNames} />
+                <DataTable
+                    firstData={firstData}
+                    tableData={tableData}
+                    setTableData={setTableData}
+                    editMode={editMode}
+                    columnNames={columnNames}
+                />
             )}
             {cultureList?.find((value) => value.name === culture) ? <Message type={result.type_msg}>{result.msg}</Message> : null}
         </MainCard>

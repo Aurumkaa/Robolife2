@@ -5,6 +5,7 @@ from django.db.models import (
 )
 
 from components.comments.models import UserCommentsModel
+from components.metrics_changes.models import MetricChangeModel
 from components.notifications.enums import NotificationsTypeEnum
 from config.settings import AUTH_USER_MODEL
 from shared.models import BaseModel
@@ -16,8 +17,15 @@ class UserNotificationsModel(BaseModel):
     comment = ForeignKey(
         UserCommentsModel,
         null=True,
+        blank=True,
         on_delete=CASCADE,
         verbose_name='Комментарий'
+    )
+    metric_change = ForeignKey(
+        MetricChangeModel, null=True,
+        blank=True,
+        on_delete=CASCADE,
+        verbose_name='Изменение метрки'
     )
     user = ForeignKey(
         AUTH_USER_MODEL,
@@ -38,4 +46,4 @@ class UserNotificationsModel(BaseModel):
         ordering = ['created']
 
     def __str__(self):
-        return f'{self.pk} | {self.user} | {self.comment}'
+        return f'{self.pk} | {self.user} | {self.comment}  | {self.metric_change}'

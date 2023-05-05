@@ -1,0 +1,8 @@
+from django.apps import AppConfig
+
+
+class MetricsChangesConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'components.metrics_changes'
+    label = 'metrics_changes'
+    verbose_name = 'Изменение метрик'
