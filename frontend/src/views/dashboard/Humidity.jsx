@@ -9,10 +9,15 @@ import MainCardChartAndTable from '../../ui-component/cards/MainCardChartAndTabl
 const Humidity = () => {
     const [chartData, setChartData] = useState([]);
     const [tableData, setTableData] = useState([]);
+    const [lastData, setLastData] = useState([]);
     const date = useSelector((state) => [state.chartSettings.dateFrom, state.chartSettings.dateTo]);
     const freq = useSelector((state) => state.chartSettings.freq);
     const station = useSelector((state) => state.station);
-
+    const AddDay = (d, cnt) => {
+        var dat = new Date(d);
+        dat.setDate(dat.getDate() + cnt);
+        return dat;
+    };
     useEffect(() => {
         fieldClimateAPI
             .getForecast(station.id, Math.round(addHours(date[0], 3) / 1000), Math.round(addHours(date[1], 3) / 1000), freq)
@@ -27,6 +32,12 @@ const Humidity = () => {
                     });
                 });
                 setTableData(tableData);
+            });
+        fieldClimateAPI
+            .getForecast(station.id, Math.round(AddDay(new Date(), -3).getTime() / 1000), Math.round(new Date().getTime() / 1000))
+            .then((response) => {
+                setLastData(getChartData(response.data.length ? { humidity: response.data[4].values.time } : {}, response.dates));
+                console.log('last data', lastData);
             });
     }, [date[0], date[1], freq, station.id]);
 

@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'django_celery_beat',
     'corsheaders',
+    'django_filters',
 ]
 
 COMPONENTS = [
@@ -192,7 +193,9 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-    'PAGE_SIZE': 20
+    'PAGE_SIZE': 20,
+
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
 SIMPLE_JWT = {

@@ -1,3 +1,5 @@
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -16,6 +18,9 @@ class UserCommentsQueryModelViewSet(QueryModelViewSet):
     serializer_class = UserCommentsListModelSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = None
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ['user']
+    ordering = ['-created']
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())

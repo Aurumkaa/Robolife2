@@ -9,7 +9,7 @@ import { CHART_PARAMETERS_ENUM } from '../constants/Constants';
 import { useDispatch } from 'react-redux';
 import am5locales_ru_RU from '@amcharts/amcharts5/locales/ru_RU';
 
-const LineChart = ({ titleChart, chartRootName, data, intervalTimeUnit, intervalCount, comments = false, range = false }) => {
+const LineChart = ({ titleChart, chartRootName, data, intervalTimeUnit, intervalCount, comments = false, range = false, type = '' }) => {
     const dispatch = useDispatch();
 
     useLayoutEffect(() => {
@@ -116,9 +116,10 @@ const LineChart = ({ titleChart, chartRootName, data, intervalTimeUnit, interval
             });
         };
 
-        if (range) {
+        if (range && type !== 'temp') {
             createRange(range.min_permissible_precipitation_level, range.max_permissible_precipitation_level, am5.color(0xa8e4a0));
-        }
+        } else if (range && type === 'temp')
+            createRange(range.min_active_temperature_level, range.max_active_temperature_level, am5.color(0xa8e4a0));
 
         // Create series
         function createSeries(name, field) {

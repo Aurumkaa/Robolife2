@@ -146,6 +146,8 @@ const SettingsCulturePage = () => {
                         label: activeItem.label,
                         max_permissible_precipitation_level: activeItem.max_permissible_precipitation_level,
                         min_permissible_precipitation_level: activeItem.min_permissible_precipitation_level,
+                        min_active_temperature_level: activeItem.min_active_temperature_level,
+                        max_active_temperature_level: activeItem.max_active_temperature_level,
                         vegetation_season_start: format(activeItem.vegetation_season_start, 'yyyy-MM-dd'),
                         vegetation_season_end: format(activeItem.vegetation_season_end, 'yyyy-MM-dd')
                     },
@@ -167,6 +169,8 @@ const SettingsCulturePage = () => {
                         label: activeItem.name,
                         max_permissible_precipitation_level: activeItem.max_permissible_precipitation_level,
                         min_permissible_precipitation_level: activeItem.min_permissible_precipitation_level,
+                        min_active_temperature_level: activeItem.min_active_temperature_level,
+                        max_active_temperature_level: activeItem.max_active_temperature_level,
                         vegetation_season_start: format(activeItem.vegetation_season_start, 'yyyy-MM-dd'),
                         vegetation_season_end: format(activeItem.vegetation_season_end, 'yyyy-MM-dd')
                     },
@@ -195,6 +199,8 @@ const SettingsCulturePage = () => {
             name: '',
             min_permissible_precipitation_level: 0,
             max_permissible_precipitation_level: 0,
+            min_active_temperature_level: 0,
+            max_active_temperature_level: 0,
             vegetation_season_start: new Date().toLocaleDateString(),
             vegetation_season_end: new Date().toLocaleDateString(),
             status: 'ADD'
@@ -248,14 +254,24 @@ const SettingsCulturePage = () => {
                         <EditableCell dataKey="name" onChange={handleChange} />
                     </Column>
 
-                    <Column fullText width={200}>
+                    <Column fullText width={100}>
                         <HeaderCell>Минимальное количество осадков</HeaderCell>
                         <EditableCell type="number" dataKey="min_permissible_precipitation_level" onChange={handleChange} />
                     </Column>
 
-                    <Column fullText width={200}>
+                    <Column fullText width={100}>
                         <HeaderCell>Максимальное количество осадков</HeaderCell>
                         <EditableCell type="number" dataKey="max_permissible_precipitation_level" onChange={handleChange} />
+                    </Column>
+
+                    <Column fullText width={100}>
+                        <HeaderCell>Минимальная сумма активных температур</HeaderCell>
+                        <EditableCell type="number" dataKey="min_active_temperature_level" onChange={handleChange} />
+                    </Column>
+
+                    <Column fullText width={100}>
+                        <HeaderCell>Максимальная сумма активных температур</HeaderCell>
+                        <EditableCell type="number" dataKey="max_active_temperature_level" onChange={handleChange} />
                     </Column>
 
                     <Column fullText width={200}>

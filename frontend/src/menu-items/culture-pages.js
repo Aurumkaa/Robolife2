@@ -18,17 +18,10 @@ const culturePages = {
     children: [
         {
             id: 'culture',
-            title: 'Осадки',
+            title: 'Параметры для вегетации растений',
             type: 'item',
             url: '/culture',
             icon: icons.GiCorn
-        },
-        {
-            id: 'culture-diseases',
-            title: 'Болезни',
-            type: 'item',
-            url: '/culture/culture-diseases',
-            icon: icons.GiGooeyMolecule
         },
         {
             id: 'chemical-treatments',
@@ -36,6 +29,13 @@ const culturePages = {
             type: 'item',
             url: '/chemical-treatments',
             icon: icons.GiChemicalDrop
+        },
+        {
+            id: 'culture-diseases',
+            title: 'Болезни',
+            type: 'item',
+            url: '/culture/culture-diseases',
+            icon: icons.GiGooeyMolecule
         }
     ]
 };

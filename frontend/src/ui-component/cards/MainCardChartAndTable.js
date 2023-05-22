@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 import { ButtonGroup, IconButton, Message, SelectPicker } from 'rsuite';
+import InfoOutlineIcon from '@rsuite/icons/InfoOutline';
 import EditIcon from '@rsuite/icons/Edit';
 import CloseIcon from '@rsuite/icons/Close';
 import CheckIcon from '@rsuite/icons/Check';
@@ -33,12 +34,16 @@ const MainCardChartAndTable = ({
     chartTitle,
     chartRootName,
     comments,
-    cultureList
+    cultureList,
+    tableDataTemp,
+    setTableDataTemp,
+    chartDataTemp
 }) => {
     const [editMode, setEditMode] = useState(false);
     const [tableMode, setTableMode] = useState(false);
     const [culture, setCulture] = useState(null);
     const [result, setResult] = useState({ type_msg: null, msg: null });
+    const [resultTemp, setResultTemp] = useState({ type_msg: null, msg: null });
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -59,6 +64,26 @@ const MainCardChartAndTable = ({
             } else {
                 setResult({
                     msg: `Для выбранной вами культуры (${culture.toLowerCase()}) за выбранный период времени выпало достаточное количество осадков`,
+                    type_msg: 'success'
+                });
+            }
+
+            var min_lvl_tmp = cultureList?.find((value) => value.name === culture).min_active_temperature_level;
+            var max_lvl_tmp = cultureList?.find((value) => value.name === culture).max_active_temperature_level;
+            var fact_lvl_tmp = chartData.at(-1).degreesDays;
+            if (fact_lvl < min_lvl) {
+                setResultTemp({
+                    msg: `Для выбранной вами культуры (${culture.toLowerCase()}) за выбранный период времени недостаточное количество тепла`,
+                    type_msg: 'warning'
+                });
+            } else if (fact_lvl > max_lvl) {
+                setResultTemp({
+                    msg: `Для выбранной вами культуры (${culture.toLowerCase()}) за выбранный период времени переизбыток тепла`,
+                    type_msg: 'warning'
+                });
+            } else {
+                setResultTemp({
+                    msg: `Для выбранной вами культуры (${culture.toLowerCase()}) за выбранный период времени достаточное количество тепла`,
                     type_msg: 'success'
                 });
             }
@@ -154,6 +179,12 @@ const MainCardChartAndTable = ({
                         <div />
                     )}
                 </Grid>
+
+                {cultureList && (
+                    <Grid item>
+                        <IconButton circle size="md" icon={<InfoOutlineIcon />} />
+                    </Grid>
+                )}
             </Grid>
             {!editMode && !tableMode ? (
                 <LineChart
@@ -174,7 +205,33 @@ const MainCardChartAndTable = ({
                     columnNames={columnNames}
                 />
             )}
-            {cultureList?.find((value) => value.name === culture) ? <Message type={result.type_msg}>{result.msg}</Message> : null}
+            {cultureList && (
+                <LineChart
+                    titleChart="Сумма активных температур, С"
+                    chartRootName="crt1"
+                    data={chartDataTemp}
+                    intervalTimeUnit={DATA_FREQUENCY_CONVERT[freq]}
+                    intervalCount={1}
+                    comments={comments}
+                    range={cultureList?.find((value) => value.name === culture)}
+                    type={'temp'}
+                />
+            )}
+            {cultureList?.find((value) => value.name === culture) ? (
+                <>
+                    <Grid container spacing={2} alignItems="stretch" direction="row" justifyContent="space-between">
+                        <Grid item xs={4}>
+                            <Message type={result.type_msg}>{result.msg}</Message>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Message type={resultTemp.type_msg}>{resultTemp.msg}</Message>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Message style={{ backgroundColor: 'rgba(234,197,232,0.58)' }}>Реккомендуемые мероприятия:</Message>
+                        </Grid>
+                    </Grid>
+                </>
+            ) : null}
         </MainCard>
     );
 };
