@@ -1,3 +1,4 @@
 from .register_user_model_viewset import RegisterUserModelViewSet
 from .token_view_base import TokenObtainPairView
-
+from .deviation_setting_model_command_veiwset import DeviationSettingCommandModelViewSet
+from .deviation_setting_model_query_veiwset import DeviationSettingQueryModelViewSet

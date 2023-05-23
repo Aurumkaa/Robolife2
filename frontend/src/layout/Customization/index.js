@@ -177,7 +177,7 @@ const Customization = () => {
                                 <Grid item xs={12} container spacing={2} alignItems="center" sx={{ mt: 2.5 }}>
                                     <Grid item>
                                         <Typography variant="h6" color="secondary">
-                                            4px
+                                            0px
                                         </Typography>
                                     </Grid>
                                     <Grid item xs>
@@ -190,7 +190,7 @@ const Customization = () => {
                                             aria-labelledby="discrete-slider-small-steps"
                                             marks
                                             step={2}
-                                            min={4}
+                                            min={0}
                                             max={24}
                                             color="secondary"
                                             sx={{

@@ -17,9 +17,10 @@ import { TbTemperature } from 'react-icons/tb';
 import { FaWind } from 'react-icons/fa';
 
 // styles
-const CardWrapper = styled(MainCard)(({ theme, color }) => ({
+const CardWrapper = styled(MainCard)(({ theme, color, deviation }) => ({
     overflow: 'hidden',
     height: '100%',
+    backgroundColor: deviation === true ? 'rgba(255,48,48,0.06)' : 'rgba(255,233,233,0.03)',
     position: 'relative',
     '&:after': {
         content: '""',
@@ -45,15 +46,14 @@ const CardWrapper = styled(MainCard)(({ theme, color }) => ({
 
 // ==============================|| DASHBOARD - TOTAL INCOME LIGHT CARD ||============================== //
 
-const TotalIncomeLightCard = ({ isLoading, type, param, color, info }) => {
+const TotalIncomeLightCard = ({ isLoading, type, param, color, info, deviation = false }) => {
     const theme = useTheme();
-
     return (
         <>
             {isLoading ? (
                 <TotalIncomeCard />
             ) : (
-                <CardWrapper border={false} content={false} color={color}>
+                <CardWrapper deviation={deviation} border={false} content={false} color={color}>
                     <Box sx={{ p: 2 }}>
                         <List sx={{ py: 0 }}>
                             <ListItem alignItems="center" disableGutters sx={{ py: 0 }}>
@@ -63,7 +63,7 @@ const TotalIncomeLightCard = ({ isLoading, type, param, color, info }) => {
                                         sx={{
                                             ...theme.typography.commonAvatar,
                                             ...theme.typography.largeAvatar,
-                                            backgroundColor: '#ffffff',
+                                            backgroundColor: 'inherit',
                                             color: color
                                         }}
                                     >

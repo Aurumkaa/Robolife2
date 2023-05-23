@@ -1,7 +1,7 @@
 import React from 'react';
 import { Avatar, Card, CardContent, CardHeader, Divider, Grid, Icon, Typography } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { PARAMS_CONVERT } from '../../constants/Constants';
+import { PARAMS_CONVERT } from '../../../constants/Constants';
 import CommentIcon from '@mui/icons-material/Comment';
 
 const CardActivity = (data) => {
