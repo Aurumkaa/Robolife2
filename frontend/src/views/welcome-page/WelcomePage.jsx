@@ -8,6 +8,8 @@ import '../welcome-page/welcome.scss';
 import TotalIncomeLightCard from '../dashboard/Default/TotalIncomeLightCard';
 import axios from 'axios';
 import { ROBOLIFE2_BACKEND_API } from '../../constants/Constants';
+import OtherCard from './OtherCard';
+import Other from './Other';
 
 const WelcomePage = () => {
     const [lastParams, setLastParams] = useState();
@@ -178,14 +180,8 @@ const WelcomePage = () => {
                 </Grid>
             </div>
 
-            <div style={{ marginTop: '30px' }}>
-                <CardHeader title="Другое" />
-                <Divider />
-                <CardContent>
-                    <Typography></Typography>
-                </CardContent>
-            </div>
-            <div style={{ marginTop: '30px' }}>
+            <Other />
+            <div style={{ marginTop: '0px' }}>
                 <CardHeader title="Расположение станций на карте" />
                 <Divider />
                 <CardContent>

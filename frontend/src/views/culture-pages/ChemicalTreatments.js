@@ -7,23 +7,12 @@ import HighchartsHeatmap from 'highcharts/modules/heatmap';
 import setForecastDiagrammOptions from './options-forecast';
 import setHeatMapOptions from './options-heatmap';
 import openmeteoAPI from '../../clients/OpenMeteoForecastClient';
+import { useSelector } from 'react-redux';
 
 HighchartsHeatmap(Highcharts);
 
-async function getData() {
-    let urll =
-        'https://api.open-meteo.com/v1/forecast?latitude=45.27&longitude=39.79&hourly=temperature_2m,relativehumidity_2m,dewpoint_2m,precipitation_probability,precipitation,weathercode,windspeed_10m,windgusts_10m&models=best_match&current_weather=true&windspeed_unit=ms&forecast_days=4&timezone=auto';
-    return await fetch(urll)
-        .then((data) => {
-            return data.json();
-        })
-        .then((resp) => {
-            return resp;
-        })
-        .catch((error) => console.log(error));
-}
-
 const ChemicalTreatments = () => {
+    const station = useSelector((state) => state.station);
     const [forecastData, setForecastData] = useState('');
     const [chartData, setChartData] = useState([]);
     const [options, setOptions] = useState();
@@ -34,7 +23,7 @@ const ChemicalTreatments = () => {
     const [arrB, setArrB] = useState([]);
 
     useEffect(() => {
-        openmeteoAPI.getForecastDataForChemicalTreatments().then((response) => {
+        openmeteoAPI.getForecastDataForChemicalTreatments(station.coordinates).then((response) => {
             var a = [];
             var b = [];
             response.hourly.time.forEach((date, i) => {
@@ -102,13 +91,13 @@ const ChemicalTreatments = () => {
                     ]);
                 }
             });
-            console.log(b);
             setArr(a);
             setArrB(b);
+
             setForecastDiagrammOptions(response, setOptions);
             setHeatMapOptions(b, setOptionsHeat);
         });
-    }, []);
+    }, [station.id]);
 
     const listItems = arr.map((el, i) => <li key={i}>{el.toLocaleString()}</li>);
     return (

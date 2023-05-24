@@ -158,7 +158,8 @@ const SearchSection = () => {
                     id: station.name.original,
                     name: station.name.custom,
                     deviceType: station.info.device_name,
-                    lastData: station.dates.max_date
+                    lastData: station.dates.max_date,
+                    coordinates: station.position.geo.coordinates
                 };
                 getStations.push(stationData);
                 if (index === 0) {
@@ -179,7 +180,8 @@ const SearchSection = () => {
             id: stationData.id,
             name: stationData.name,
             deviceType: stationData.deviceType,
-            lastData: stationData.lastData
+            lastData: stationData.lastData,
+            coordinates: stationData.coordinates
         });
     };
 
