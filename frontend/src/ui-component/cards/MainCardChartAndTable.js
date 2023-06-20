@@ -12,8 +12,9 @@ import LineChart from '../LineChart';
 import { DATA_FREQUENCY_CONVERT } from '../../constants/Constants';
 import DataTable from '../DataTable';
 import MainCard from './MainCard';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { endOfDay, startOfDay } from 'date-fns';
+import OtherCard from '../../views/welcome-page/OtherCard';
 
 const buttonColor = {
     color: 'blue'
@@ -21,12 +22,12 @@ const buttonColor = {
 
 const MainCardChartAndTable = ({
     firstData,
-    setFirstData,
     title,
     subheader,
     tableData,
     setTableData,
     chartData,
+    deviation,
     editable,
     saveData,
     freq,
@@ -35,16 +36,15 @@ const MainCardChartAndTable = ({
     chartRootName,
     comments,
     cultureList,
-    tableDataTemp,
-    setTableDataTemp,
     chartDataTemp
 }) => {
     const [editMode, setEditMode] = useState(false);
     const [tableMode, setTableMode] = useState(false);
     const [culture, setCulture] = useState(null);
-    const [result, setResult] = useState({ type_msg: null, msg: null });
-    const [resultTemp, setResultTemp] = useState({ type_msg: null, msg: null });
+    const [resultPrec, setResultPrec] = useState('');
+    const [resultTemp, setResultTemp] = useState('');
     const dispatch = useDispatch();
+    const date = useSelector((state) => [state.chartSettings.dateFrom, state.chartSettings.dateTo]);
 
     useEffect(() => {
         if (culture) {
@@ -52,43 +52,27 @@ const MainCardChartAndTable = ({
             var max_lvl = cultureList?.find((value) => value.name === culture).max_permissible_precipitation_level;
             var fact_lvl = chartData.at(-1).increaseCountPrecipitation;
             if (fact_lvl < min_lvl) {
-                setResult({
-                    msg: `Для выбранной вами культуры (${culture.toLowerCase()}) за выбранный период времени выпало недостаточное количество осадков`,
-                    type_msg: 'warning'
-                });
+                setResultPrec('little');
             } else if (fact_lvl > max_lvl) {
-                setResult({
-                    msg: `Для выбранной вами культуры (${culture.toLowerCase()}) за выбранный период времени переизбыток осадков`,
-                    type_msg: 'warning'
-                });
+                setResultPrec('many');
             } else {
-                setResult({
-                    msg: `Для выбранной вами культуры (${culture.toLowerCase()}) за выбранный период времени выпало достаточное количество осадков`,
-                    type_msg: 'success'
-                });
+                setResultPrec('normal');
             }
 
             var min_lvl_tmp = cultureList?.find((value) => value.name === culture).min_active_temperature_level;
             var max_lvl_tmp = cultureList?.find((value) => value.name === culture).max_active_temperature_level;
-            var fact_lvl_tmp = chartData.at(-1).degreesDays;
-            if (fact_lvl < min_lvl) {
-                setResultTemp({
-                    msg: `Для выбранной вами культуры (${culture.toLowerCase()}) за выбранный период времени недостаточное количество тепла`,
-                    type_msg: 'warning'
-                });
-            } else if (fact_lvl > max_lvl) {
-                setResultTemp({
-                    msg: `Для выбранной вами культуры (${culture.toLowerCase()}) за выбранный период времени переизбыток тепла`,
-                    type_msg: 'warning'
-                });
+            var fact_lvl_tmp = chartDataTemp.at(-1).degreesDaysUsa;
+            console.log(min_lvl_tmp, max_lvl_tmp, fact_lvl_tmp);
+            if (fact_lvl_tmp < min_lvl_tmp) {
+                setResultTemp('little');
+            } else if (fact_lvl_tmp > max_lvl_tmp) {
+                setResultTemp('many');
             } else {
-                setResultTemp({
-                    msg: `Для выбранной вами культуры (${culture.toLowerCase()}) за выбранный период времени достаточное количество тепла`,
-                    type_msg: 'success'
-                });
+                setResultTemp('normal');
             }
         }
-    }, [culture, chartData]);
+        // console.log(result);
+    }, [culture, chartData, date[1], date[0]]);
 
     const handleVegetationPeriod = () => {
         if (culture)
@@ -193,6 +177,7 @@ const MainCardChartAndTable = ({
                     data={chartData}
                     intervalTimeUnit={DATA_FREQUENCY_CONVERT[freq]}
                     intervalCount={1}
+                    deviation={deviation}
                     comments={comments}
                     range={cultureList?.find((value) => value.name === culture)}
                 />
@@ -206,32 +191,26 @@ const MainCardChartAndTable = ({
                 />
             )}
             {cultureList && (
-                <LineChart
-                    titleChart="Сумма активных температур, С"
-                    chartRootName="crt1"
-                    data={chartDataTemp}
-                    intervalTimeUnit={DATA_FREQUENCY_CONVERT[freq]}
-                    intervalCount={1}
-                    comments={comments}
-                    range={cultureList?.find((value) => value.name === culture)}
-                    type={'temp'}
-                />
-            )}
-            {cultureList?.find((value) => value.name === culture) ? (
                 <>
-                    <Grid container spacing={2} alignItems="stretch" direction="row" justifyContent="space-between">
-                        <Grid item xs={4}>
-                            <Message type={result.type_msg}>{result.msg}</Message>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Message type={resultTemp.type_msg}>{resultTemp.msg}</Message>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Message style={{ backgroundColor: 'rgba(234,197,232,0.58)' }}>Реккомендуемые мероприятия:</Message>
-                        </Grid>
-                    </Grid>
+                    {resultPrec === 'little' && <OtherCard type="prec" result={{ status: true }} color={'#5bb5bd'} />}
+                    {resultPrec === 'normal' && <OtherCard type="prec_normal" result={{ status: false }} color={'#5bb5bd'} />}
+                    {resultPrec === 'many' && <OtherCard type="prec_many" result={{ status: true }} color={'#5bb5bd'} />}
+
+                    <LineChart
+                        titleChart="Сумма активных температур, С"
+                        chartRootName="crt1"
+                        data={chartDataTemp}
+                        intervalTimeUnit={DATA_FREQUENCY_CONVERT[freq]}
+                        intervalCount={1}
+                        comments={comments}
+                        range={cultureList?.find((value) => value.name === culture)}
+                        type={'temp'}
+                    />
+                    {resultTemp === 'little' && <OtherCard type="warm" result={{ status: true }} color={'#ff9463'} />}
+                    {resultTemp === 'normal' && <OtherCard type="temp_normal" result={{ status: false }} color={'#ff9463'} />}
+                    {resultTemp === 'many' && <OtherCard type="temp_many" result={{ status: false }} color={'#ff9463'} />}
                 </>
-            ) : null}
+            )}
         </MainCard>
     );
 };

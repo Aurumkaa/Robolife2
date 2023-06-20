@@ -9,7 +9,17 @@ import { CHART_PARAMETERS_ENUM } from '../constants/Constants';
 import { useDispatch } from 'react-redux';
 import am5locales_ru_RU from '@amcharts/amcharts5/locales/ru_RU';
 
-const LineChart = ({ titleChart, chartRootName, data, intervalTimeUnit, intervalCount, comments = false, range = false, type = '' }) => {
+const LineChart = ({
+    titleChart,
+    chartRootName,
+    data,
+    deviation,
+    intervalTimeUnit,
+    intervalCount,
+    comments = false,
+    range = false,
+    type = ''
+}) => {
     const dispatch = useDispatch();
 
     useLayoutEffect(() => {
@@ -115,6 +125,54 @@ const LineChart = ({ titleChart, chartRootName, data, intervalTimeUnit, interval
                 })
             });
         };
+
+        if (deviation) {
+            var goalRange1 = yAxis.createAxisRange(
+                yAxis.makeDataItem({
+                    value: deviation.min
+                })
+            );
+
+            goalRange1.get('grid').setAll({
+                forceHidden: false,
+                strokeOpacity: 0.2
+            });
+
+            var goalLabel1 = goalRange1.get('label');
+
+            goalLabel1.setAll({
+                location: 0,
+                visible: true,
+                inside: true,
+                centerX: 0,
+                centerY: am5.p100,
+                fontWeight: 'bold',
+                text: 'min'
+            });
+
+            var goalRange2 = yAxis.createAxisRange(
+                yAxis.makeDataItem({
+                    value: deviation.max
+                })
+            );
+
+            goalRange2.get('grid').setAll({
+                forceHidden: false,
+                strokeOpacity: 0.2
+            });
+
+            var goalLabel2 = goalRange2.get('label');
+
+            goalLabel2.setAll({
+                location: 0,
+                visible: true,
+                inside: true,
+                centerX: 0,
+                centerY: am5.p100,
+                fontWeight: 'bold',
+                text: 'max'
+            });
+        }
 
         if (range && type !== 'temp') {
             createRange(range.min_permissible_precipitation_level, range.max_permissible_precipitation_level, am5.color(0xa8e4a0));

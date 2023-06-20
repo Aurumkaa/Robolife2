@@ -23,8 +23,7 @@ class UserModel(AbstractUser):
 
 
 class DeviationSetting(BaseModel):
-    """Модель пользовательских натсроек оповещений при погодных отклонениях"""
-
+    """Модель пользовательских настроек оповещений при погодных отклонениях"""
 
     param_type = CharField(
         max_length=128,
@@ -37,7 +36,7 @@ class DeviationSetting(BaseModel):
     min = FloatField(verbose_name='Минимум', null=True, blank=True)
     max = FloatField(verbose_name='Максимум', null=True, blank=True)
 
-    class Meta(AbstractUser.Meta):
+    class Meta:
         verbose_name = "Настройка сообщений об отклонении параметра"
         verbose_name_plural = "Настройки сообщений об отклонении параметра"
 

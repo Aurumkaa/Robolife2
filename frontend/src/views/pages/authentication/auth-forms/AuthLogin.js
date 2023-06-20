@@ -95,6 +95,7 @@ const FirebaseLogin = ({ ...others }) => {
                     axios.post(ROBOLIFE2_BACKEND_API.base_url + ROBOLIFE2_BACKEND_API.authorization_url, values).then(({ data }) => {
                         localStorage.clear();
                         localStorage.setItem('token', data.access);
+                        localStorage.setItem('refresh_token', data.refresh);
                         localStorage.setItem('id', data.id);
                         localStorage.setItem('is_superuser', data.is_superuser);
                         localStorage.setItem('username', data.username);

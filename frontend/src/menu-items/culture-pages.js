@@ -1,14 +1,14 @@
 // assets
 import { GiCorn, GiGooeyMolecule, GiChemicalDrop } from 'react-icons/gi';
+import { AiOutlineBarChart } from 'react-icons/ai';
 
 // constant
 const icons = {
     GiCorn,
     GiGooeyMolecule,
-    GiChemicalDrop
+    GiChemicalDrop,
+    AiOutlineBarChart
 };
-
-// ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
 
 const culturePages = {
     id: 'pages',
@@ -16,6 +16,13 @@ const culturePages = {
     caption: '',
     type: 'group',
     children: [
+        {
+            id: 'forecast',
+            title: 'Краткосрочный прогноз',
+            type: 'item',
+            url: '/forecast',
+            icon: icons.AiOutlineBarChart
+        },
         {
             id: 'culture',
             title: 'Параметры для вегетации растений',

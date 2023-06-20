@@ -7,9 +7,11 @@ import ChartMainCard from '../../ui-component/extended/ChartMainCard';
 import { addHours } from 'date-fns';
 import axios from 'axios';
 import MainCardChartAndTable from '../../ui-component/cards/MainCardChartAndTable';
+import { client } from '../../utils/axiosClient';
 
 const Temperature = () => {
     const [chartData, setChartData] = useState([]);
+    const [deviation, setDeviation] = useState({ min: null, max: null });
     const [tableData, setTableData] = useState([]);
     const [chartDataInc, setChartDataInc] = useState([]);
     const [tableDataInc, setTableDataInc] = useState([]);
@@ -143,6 +145,15 @@ const Temperature = () => {
             });
     }, [date[0], date[1]]);
 
+    useEffect(() => {
+        client
+            .get(ROBOLIFE2_BACKEND_API.base_url + '/api/accounts/settings_deviation/q/' + `?user=${localStorage.getItem('id')}`, {})
+            .then(({ data }) => {
+                const d = data?.find((el) => el.param_type === 'temperature');
+                setDeviation({ min: d.min, max: d.max });
+            });
+    }, []);
+
     return (
         <div>
             <ChartMainCard title="Температура" />
@@ -153,6 +164,7 @@ const Temperature = () => {
                 setTableData={setTableData}
                 chartData={chartData}
                 freq={freq}
+                deviation={deviation}
                 chartTitle="Температура воздуха,°C"
                 chartRootName="chart1"
                 columnNames={[

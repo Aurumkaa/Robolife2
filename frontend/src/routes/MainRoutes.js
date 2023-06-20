@@ -1,11 +1,9 @@
 import { lazy } from 'react';
-
-// project imports
-// eslint-disable-next-line no-unused-vars
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
 import RequiredAuth from '../utils/RequiredAuth';
-// dashboard routing
+
+// routing
 const WelcomePage = Loadable(lazy(() => import('views/welcome-page/WelcomePage')));
 
 const TemperaturePage = Loadable(lazy(() => import('views/dashboard/Temperature')));
@@ -31,6 +29,8 @@ const SettingsCulturePage = Loadable(lazy(() => import('views/culture-pages/Sett
 const PlantDiseasesPage = Loadable(lazy(() => import('views/culture-pages/PlantDiseasesPage')));
 
 const ChemicalTreatments = Loadable(lazy(() => import('views/culture-pages/ChemicalTreatments')));
+
+const Forecast = Loadable(lazy(() => import('views/culture-pages/Forecast')));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -54,6 +54,14 @@ const MainRoutes = {
             element: (
                 <RequiredAuth>
                     <ChemicalTreatments />
+                </RequiredAuth>
+            )
+        },
+        {
+            path: 'forecast',
+            element: (
+                <RequiredAuth>
+                    <Forecast />
                 </RequiredAuth>
             )
         },

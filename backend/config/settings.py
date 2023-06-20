@@ -38,10 +38,13 @@ CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
     'http://localhost',
     'https://robolife2.online',
+    'http://127.0.0.1:3000'
 )
 
+CORS_ALLOW_CREDENTIALS = True
+
 ADMINS = (
-    ('Aleksandr Skrynnik', 'a.skrynnik@robolife2.ru'),
+    ('Anna Toporkova', 'a.toporkova@robolife2.ru'),
 )
 
 # Application definition
@@ -70,6 +73,7 @@ COMPONENTS = [
     'components.agriculture',
     'components.neural_network',
     'components.metrics_changes',
+    'components.feedback',
 ]
 
 

@@ -77,6 +77,19 @@ const DISEASES_NAME = {
     stripe_rust: 'полоса ржавчины'
 };
 
+const ACCEPTABLE_CHEMICAL_TREATMENT_DEVIATIONS = {
+    temperature: 2,
+    wingusts: 0.1
+};
+const IDEAL_CONDITIONS_CHEMICAL_TREATMENT = {
+    temperature_min: 10,
+    temperature_max: 25,
+    humidity_min: 70,
+    humidity_max: 80,
+    wingusts_max: 5,
+    precipitation_max: 0
+};
+
 export {
     FIELD_CLIMATE_API,
     ROBOLIFE2_BACKEND_API,
@@ -84,5 +97,7 @@ export {
     DATA_FREQUENCY_CONVERT,
     PARAMS_CONVERT,
     CULTURE_NAME,
-    DISEASES_NAME
+    DISEASES_NAME,
+    ACCEPTABLE_CHEMICAL_TREATMENT_DEVIATIONS,
+    IDEAL_CONDITIONS_CHEMICAL_TREATMENT
 };

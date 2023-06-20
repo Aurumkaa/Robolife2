@@ -186,37 +186,6 @@ const NotificationList = ({ notifications }) => {
                     );
                 }
             })}
-
-            {/*<ListItemWrapper>*/}
-            {/*    <ListItem alignItems="center">*/}
-            {/*        <ListItemAvatar>*/}
-            {/*            <Avatar alt="Обджект Обджектович">ОО</Avatar>*/}
-            {/*        </ListItemAvatar>*/}
-            {/*        <ListItemText primary="Обджект Обджектович" />*/}
-            {/*        <ListItemSecondaryAction>*/}
-            {/*            <Grid container justifyContent="flex-end">*/}
-            {/*                <Grid item xs={12}>*/}
-            {/*                    <Typography style={{ marginBottom: '3.5em' }} variant="caption" display="block" gutterBottom>*/}
-            {/*                        {'11.11.2022 16:29'}*/}
-            {/*                    </Typography>*/}
-            {/*                </Grid>*/}
-            {/*            </Grid>*/}
-            {/*        </ListItemSecondaryAction>*/}
-            {/*    </ListItem>*/}
-            {/*    <Grid container direction="column" className="list-container">*/}
-            {/*        <Grid item xs={12} sx={{ pb: 2 }}>*/}
-            {/*            <Typography variant="subtitle2">Изменил параметр "Осадки" от 16.10.2022 16:00</Typography>*/}
-            {/*        </Grid>*/}
-            {/*        <Grid item xs={12}>*/}
-            {/*            <Grid container>*/}
-            {/*                <Grid item>*/}
-            {/*                    <Chip label="Изменение" sx={chipChangeSX} />*/}
-            {/*                </Grid>*/}
-            {/*            </Grid>*/}
-            {/*        </Grid>*/}
-            {/*    </Grid>*/}
-            {/*</ListItemWrapper>*/}
-            {/*<Divider />*/}
         </List>
     );
 };

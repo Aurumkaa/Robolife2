@@ -10,6 +10,7 @@ import axios from 'axios';
 import { ROBOLIFE2_BACKEND_API } from '../../constants/Constants';
 import OtherCard from './OtherCard';
 import Other from './Other';
+import { client } from '../../utils/axiosClient';
 
 const WelcomePage = () => {
     const [lastParams, setLastParams] = useState();
@@ -40,10 +41,8 @@ const WelcomePage = () => {
     }, [station.id]);
 
     useEffect(() => {
-        axios
-            .get(ROBOLIFE2_BACKEND_API.base_url + '/api/accounts/settings_deviation/q/' + `?user=${localStorage.getItem('id')}`, {
-                headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
-            })
+        client
+            .get(ROBOLIFE2_BACKEND_API.base_url + '/api/accounts/settings_deviation/q/' + `?user=${localStorage.getItem('id')}`, {})
             .then(({ data }) => {
                 SettingsParamDeviation(data, setDeviation, lastParams);
                 console.log(deviation);
@@ -181,6 +180,7 @@ const WelcomePage = () => {
             </div>
 
             <Other />
+
             <div style={{ marginTop: '0px' }}>
                 <CardHeader title="Расположение станций на карте" />
                 <Divider />
