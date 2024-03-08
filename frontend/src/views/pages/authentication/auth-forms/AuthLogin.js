@@ -92,33 +92,36 @@ const FirebaseLogin = ({ ...others }) => {
                     password: Yup.string().max(255).required('Пароль не введен')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-                    axios.post(ROBOLIFE2_BACKEND_API.base_url + ROBOLIFE2_BACKEND_API.authorization_url, values).then(({ data }) => {
-                        localStorage.clear();
-                        localStorage.setItem('token', data.access);
-                        localStorage.setItem('id', data.id);
-                        localStorage.setItem('is_superuser', data.is_superuser);
-                        localStorage.setItem('username', data.username);
-                        localStorage.setItem('email', data.email);
-                        localStorage.setItem('firstName', data.first_name);
-                        localStorage.setItem('lastName', data.last_name);
-                        localStorage.setItem('patronymic', data.patronymic);
-                        localStorage.setItem('phone', data.phone);
-                        scriptedRef.current = data.access;
-                        try {
-                            if (scriptedRef.current) {
-                                setStatus({ success: true });
-                                setSubmitting(false);
-                                navigate(fromPage, { replace: true });
+                    axios
+                        .post(ROBOLIFE2_BACKEND_API.base_url + ROBOLIFE2_BACKEND_API.authorization_url, values)
+                        .then(({ data }) => {
+                            localStorage.clear();
+                            localStorage.setItem('token', data.access);
+                            localStorage.setItem('id', data.id);
+                            localStorage.setItem('is_superuser', data.is_superuser);
+                            localStorage.setItem('username', data.username);
+                            localStorage.setItem('email', data.email);
+                            localStorage.setItem('firstName', data.first_name);
+                            localStorage.setItem('lastName', data.last_name);
+                            localStorage.setItem('patronymic', data.patronymic);
+                            localStorage.setItem('phone', data.phone);
+                            scriptedRef.current = data.access;
+                            try {
+                                if (scriptedRef.current) {
+                                    setStatus({ success: true });
+                                    setSubmitting(false);
+                                    navigate(fromPage, { replace: true });
+                                }
+                            } catch (err) {
+                                console.error(err);
+                                if (scriptedRef.current) {
+                                    setStatus({ success: false });
+                                    setErrors({ submit: err.message });
+                                    setSubmitting(false);
+                                }
                             }
-                        } catch (err) {
-                            console.error(err);
-                            if (scriptedRef.current) {
-                                setStatus({ success: false });
-                                setErrors({ submit: err.message });
-                                setSubmitting(false);
-                            }
-                        }
-                    });
+                        })
+                        .catch((err) => setErrors({ submit: err?.response?.data?.detail || 'Не удалось войти' }));
                 }}
             >
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (

@@ -1,9 +1,10 @@
 // assets
-import { IconSeeding } from '@tabler/icons';
+import { IconSeeding, IconGrowth } from '@tabler/icons';
 
 // constant
 const icons = {
-    IconSeeding
+    IconSeeding,
+    IconGrowth
 };
 
 // ==============================|| EXTRA PAGES MENU ITEMS ||============================== //
@@ -20,6 +21,13 @@ const calculation = {
             type: 'item',
             url: '/calculation/soil_moisture',
             icon: icons.IconSeeding
+        },
+        {
+            id: 'culture_prediction',
+            title: 'Прогноз оптимальности посева',
+            type: 'item',
+            url: '/calculation/best_culture',
+            icon: icons.IconGrowth
         }
     ]
 };

@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client';
 // third party
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
+import { ru } from 'yup-locales';
+import { setLocale } from 'yup';
 
 // project imports
 import * as serviceWorker from 'serviceWorker';
@@ -14,6 +16,12 @@ import 'assets/scss/style.scss';
 import config from './config';
 
 // ==============================|| REACT DOM RENDER  ||============================== //
+setLocale({
+    ...ru,
+    mixed: {
+        required: 'Это поле обязательно'
+    }
+});
 
 const container = document.getElementById('root');
 const root = createRoot(container); // createRoot(container!) if you use TypeScript
