@@ -5,6 +5,8 @@ import * as yup from 'yup';
 import { useState, useCallback } from 'react';
 import Loader from 'ui-component/Loader';
 import { red, green, amber } from '@mui/material/colors';
+import axios from 'axios';
+import { ROBOLIFE2_BACKEND_API } from '../../../constants/Constants';
 
 const bestCultureFormSchema = yup.object().shape({
     temperature: yup.number().required(),
@@ -52,9 +54,9 @@ const getMockCultureStatistics = () => {
 };
 
 const cultureStatisticsConfig = {
-    optimal: { min: 0.725, color: green['500'] },
-    average: { min: 0.525, color: amber['500'] },
-    bad: { min: 0, color: red['500'] }
+    optimal: { min: 0.45, color: green['500'] },
+    average: { min: 0.15, color: amber['500'] },
+    bad: { min: -1, color: red['500'] }
 };
 
 const BestCulturePage = () => {
@@ -69,9 +71,19 @@ const BestCulturePage = () => {
             try {
                 setCultureStatistics(null);
                 setIsCalculationLoading(true);
-                await new Promise((r) => setTimeout(r, 2000));
-                setCultureStatistics(getMockCultureStatistics());
+
+                const res = await axios.post(ROBOLIFE2_BACKEND_API.base_url + ROBOLIFE2_BACKEND_API.harvest_recommendation, values);
+                const stat = Object.entries(res.data)
+                    .reduce((acc, [name, weight]) => {
+                        return [...acc, { name, weight }];
+                    }, [])
+                    .sort((a, b) => b.weight - a.weight);
+
+                console.log({ stat });
+
+                setCultureStatistics(stat);
             } catch (err) {
+                console.error(err);
                 formikHelpers.setErrors({ submit: 'Не удалось провести расчет!' });
             } finally {
                 setIsCalculationLoading(false);

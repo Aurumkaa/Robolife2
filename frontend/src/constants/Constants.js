@@ -17,7 +17,8 @@ const ROBOLIFE2_BACKEND_API = {
     authorization_url: '/api/accounts/authorization/',
     registration_url: '/api/accounts/register/',
     agriculture_url: '/api/agriculture/',
-    admin_panel_url: '/admin'
+    admin_panel_url: '/admin',
+    harvest_recommendation: '/api/agriculture/harvest_recommendations/'
 };
 
 const CHART_PARAMETERS_ENUM = {
