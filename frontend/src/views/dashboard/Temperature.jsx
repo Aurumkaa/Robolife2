@@ -146,8 +146,10 @@ const Temperature = () => {
     }, [date[0], date[1]]);
 
     useEffect(() => {
-        client
-            .get(ROBOLIFE2_BACKEND_API.base_url + '/api/accounts/settings_deviation/q/' + `?user=${localStorage.getItem('id')}`, {})
+        axios
+            .get(ROBOLIFE2_BACKEND_API.base_url + '/api/accounts/settings_deviation/q/' + `?user=${localStorage.getItem('id')}`, {
+                headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+            })
             .then(({ data }) => {
                 const d = data?.find((el) => el.param_type === 'temperature');
                 setDeviation({ min: d.min, max: d.max });

@@ -14,7 +14,7 @@ const Forecast = () => {
         openmeteoAPI.getForecastDataForChemicalTreatments(station.coordinates).then((response) => {
             setForecastDiagrammOptions(response, setOptions);
         });
-    }, [station.id]);
+    }, [station]);
     return (
         <MainCard title="Прогноз погоды" subheader="Данные получены из API open-meteo">
             <HighchartsReact highcharts={Highcharts} options={options} />

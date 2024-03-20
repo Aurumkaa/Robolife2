@@ -41,7 +41,7 @@ const ModalUpdate = ({ open, handleClose, data, dictDiviation, refreshData }) =>
                                 .nullable(true)
                                 .when('max', {
                                     is: (max) => !max || max.length === 0,
-                                    then: Yup.number().required('Одно из полей должно быть заполнено')
+                                    then: () => Yup.number().required('Одно из полей должно быть заполнено')
                                 }),
                             max: Yup.number()
                                 .nullable(true)
@@ -52,7 +52,7 @@ const ModalUpdate = ({ open, handleClose, data, dictDiviation, refreshData }) =>
                                 })
                                 .when('min', {
                                     is: (min) => !min || min.length === 0,
-                                    then: Yup.number().required('Одно из полей должно быть заполнено')
+                                    then: () => Yup.number().required('Одно из полей должно быть заполнено')
                                 })
                         },
                         [['min', 'max']]

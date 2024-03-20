@@ -3,7 +3,7 @@ export const initialState = {
     name: '',
     deviceType: '',
     lastData: '',
-    coordinates: ['', '']
+    coordinates: [0, 0]
 };
 
 const stationReducer = (state = initialState, action) => {

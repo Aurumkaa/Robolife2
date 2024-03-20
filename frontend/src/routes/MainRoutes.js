@@ -30,7 +30,6 @@ const SettingsCulturePage = Loadable(lazy(() => import('views/culture-pages/Sett
 
 const BestCulturePage = Loadable(lazy(() => import('views/calculation-pages/best-culture-page/BestCulturePage')));
 
-
 const PlantDiseasesPage = Loadable(lazy(() => import('views/culture-pages/PlantDiseasesPage')));
 
 const ChemicalTreatments = Loadable(lazy(() => import('views/culture-pages/ChemicalTreatments')));

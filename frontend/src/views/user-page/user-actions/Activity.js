@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Typography } from '@mui/material';
 import CardActivity from './CardActivity';
 import CardActivityChanges from './CardActivityChanges';
+import { ROBOLIFE2_BACKEND_API } from '../../../constants/Constants';
 
 const Activity = () => {
     const [activityDataComment, setActivityDataComment] = useState([]);
@@ -12,7 +13,7 @@ const Activity = () => {
         var arr = [];
 
         axios
-            .get('http://127.0.0.1:8000/api/comments/q/' + `?user=${localStorage.getItem('id')}`, {
+            .get(ROBOLIFE2_BACKEND_API.base_url + '/api/comments/q/' + `?user=${localStorage.getItem('id')}`, {
                 headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
             })
             .then(({ data }) => {
@@ -22,7 +23,7 @@ const Activity = () => {
                 });
             });
         axios
-            .get('http://127.0.0.1:8000/api/metric_changes/q/' + `?user=${localStorage.getItem('id')}`, {
+            .get(ROBOLIFE2_BACKEND_API.base_url + '/api/metric_changes/q/' + `?user=${localStorage.getItem('id')}`, {
                 headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
             })
             .then(({ data }) => {

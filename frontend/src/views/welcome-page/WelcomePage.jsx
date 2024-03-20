@@ -37,19 +37,16 @@ const WelcomePage = () => {
     useEffect(() => {
         fieldClimateAPI.getLastParams(station.id).then((response) => {
             setLastParams(response);
+            axios
+                .get(ROBOLIFE2_BACKEND_API.base_url + '/api/accounts/settings_deviation/q/' + `?user=${localStorage.getItem('id')}`, {
+                    headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+                })
+                .then(({ data }) => {
+                    console.log({ data });
+                    SettingsParamDeviation(data, setDeviation, response);
+                });
         });
-    }, [station.id]);
-
-    useEffect(() => {
-        axios
-            .get(ROBOLIFE2_BACKEND_API.base_url + '/api/accounts/settings_deviation/q/' + `?user=${localStorage.getItem('id')}`, {
-                headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
-            })
-            .then(({ data }) => {
-                SettingsParamDeviation(data, setDeviation, lastParams);
-                console.log(deviation);
-            });
-    }, [lastParams]);
+    }, [station?.id]);
 
     const SettingsParamDeviation = (data, setDeviation, response) => {
         var temperature = data?.find(({ param_type }) => param_type === 'temperature');
