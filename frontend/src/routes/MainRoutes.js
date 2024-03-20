@@ -30,6 +30,12 @@ const SettingsCulturePage = Loadable(lazy(() => import('views/culture-pages/Sett
 
 const BestCulturePage = Loadable(lazy(() => import('views/calculation-pages/best-culture-page/BestCulturePage')));
 
+
+const PlantDiseasesPage = Loadable(lazy(() => import('views/culture-pages/PlantDiseasesPage')));
+
+const ChemicalTreatments = Loadable(lazy(() => import('views/culture-pages/ChemicalTreatments')));
+
+const Forecast = Loadable(lazy(() => import('views/culture-pages/Forecast')));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -45,6 +51,22 @@ const MainRoutes = {
             element: (
                 <RequiredAuth>
                     <WelcomePage />
+                </RequiredAuth>
+            )
+        },
+        {
+            path: 'chemical-treatments',
+            element: (
+                <RequiredAuth>
+                    <ChemicalTreatments />
+                </RequiredAuth>
+            )
+        },
+        {
+            path: 'forecast',
+            element: (
+                <RequiredAuth>
+                    <Forecast />
                 </RequiredAuth>
             )
         },
@@ -176,6 +198,14 @@ const MainRoutes = {
                     element: (
                         <RequiredAuth>
                             <SettingsCulturePage />
+                        </RequiredAuth>
+                    )
+                },
+                {
+                    path: 'culture-diseases',
+                    element: (
+                        <RequiredAuth>
+                            <PlantDiseasesPage />
                         </RequiredAuth>
                     )
                 }

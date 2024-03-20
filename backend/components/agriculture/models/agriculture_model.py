@@ -21,7 +21,12 @@ class AgricultureModel(BaseModel):
     )
     vegetation_season_start = DateField(verbose_name='Начало вегетационного периода')
     vegetation_season_end = DateField(verbose_name='Конец вегетационного периода')
-
+    max_active_temperature_level = PositiveSmallIntegerField(
+        verbose_name='Максимальный уровень суммы активных температур (С)'
+    )
+    min_active_temperature_level = PositiveSmallIntegerField(
+        verbose_name='Минимальный уровень суммы активных температур (С)'
+    )
     class Meta:
         verbose_name_plural = 'Агрокультуры'
         verbose_name = 'Агрокультура'

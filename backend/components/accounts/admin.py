@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from .models import UserModel
+from .models.user_model import DeviationSetting
 
 
 @admin.register(UserModel)
@@ -22,3 +23,6 @@ class UserModelAdmin(admin.ModelAdmin):
         'last_name'
     )
     list_filter = ('date_joined',)
+
+
+admin.site.register(DeviationSetting)

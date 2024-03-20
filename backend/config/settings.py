@@ -33,15 +33,18 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # CORS Policy
-CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
     'http://localhost',
     'https://robolife2.online',
+    'http://127.0.0.1:3000'
 )
 
+CORS_ALLOW_CREDENTIALS = True
+
 ADMINS = (
-    ('Aleksandr Skrynnik', 'a.skrynnik@robolife2.ru'),
+    ('Anna Toporkova', 'a.toporkova@robolife2.ru'),
 )
 
 # Application definition
@@ -59,6 +62,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'django_celery_beat',
     'corsheaders',
+    'django_filters',
 ]
 
 COMPONENTS = [
@@ -67,6 +71,9 @@ COMPONENTS = [
     'components.comments',
     'components.notifications',
     'components.agriculture',
+    'components.neural_network',
+    'components.metrics_changes',
+    'components.feedback',
 ]
 
 
@@ -190,7 +197,9 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     # 'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
-    'PAGE_SIZE': 20
+    'PAGE_SIZE': 20,
+
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
 SIMPLE_JWT = {

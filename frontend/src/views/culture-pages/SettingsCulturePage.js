@@ -86,6 +86,7 @@ const ActionCell = ({ rowData, dataKey, onSave, onCancel, onEditState, onDelete,
 
 const SettingsCulturePage = () => {
     const [deleteModal, setDeleteModal] = useState({ status: false, id: null });
+    const [isLoading, setIsLoading] = useState(true);
 
     const [data, setData] = useState([]);
     const [editedData, setEditedData] = useState([]);
@@ -96,6 +97,7 @@ const SettingsCulturePage = () => {
                 headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
             })
             .then(({ data }) => {
+                setIsLoading(false);
                 setData(data);
                 setEditedData(data);
             });
@@ -133,7 +135,7 @@ const SettingsCulturePage = () => {
     const handleSave = (id) => {
         const nextData = Object.assign([], editedData);
         const activeItem = nextData.find((item) => item.id === id);
-
+        setIsLoading(true);
         if (activeItem.status === 'EDIT') {
             activeItem.status = null;
             axios
@@ -144,6 +146,8 @@ const SettingsCulturePage = () => {
                         label: activeItem.label,
                         max_permissible_precipitation_level: activeItem.max_permissible_precipitation_level,
                         min_permissible_precipitation_level: activeItem.min_permissible_precipitation_level,
+                        min_active_temperature_level: activeItem.min_active_temperature_level,
+                        max_active_temperature_level: activeItem.max_active_temperature_level,
                         vegetation_season_start: format(activeItem.vegetation_season_start, 'yyyy-MM-dd'),
                         vegetation_season_end: format(activeItem.vegetation_season_end, 'yyyy-MM-dd')
                     },
@@ -151,7 +155,8 @@ const SettingsCulturePage = () => {
                         headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
                     }
                 )
-                .then(({ data }) => {
+                .then(() => {
+                    setIsLoading(false);
                     setData(nextData);
                 });
         } else {
@@ -164,6 +169,8 @@ const SettingsCulturePage = () => {
                         label: activeItem.name,
                         max_permissible_precipitation_level: activeItem.max_permissible_precipitation_level,
                         min_permissible_precipitation_level: activeItem.min_permissible_precipitation_level,
+                        min_active_temperature_level: activeItem.min_active_temperature_level,
+                        max_active_temperature_level: activeItem.max_active_temperature_level,
                         vegetation_season_start: format(activeItem.vegetation_season_start, 'yyyy-MM-dd'),
                         vegetation_season_end: format(activeItem.vegetation_season_end, 'yyyy-MM-dd')
                     },
@@ -171,7 +178,8 @@ const SettingsCulturePage = () => {
                         headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
                     }
                 )
-                .then(({ data }) => {
+                .then(() => {
+                    setIsLoading(false);
                     setData(nextData);
                 });
         }
@@ -191,6 +199,8 @@ const SettingsCulturePage = () => {
             name: '',
             min_permissible_precipitation_level: 0,
             max_permissible_precipitation_level: 0,
+            min_active_temperature_level: 0,
+            max_active_temperature_level: 0,
             vegetation_season_start: new Date().toLocaleDateString(),
             vegetation_season_end: new Date().toLocaleDateString(),
             status: 'ADD'
@@ -238,20 +248,30 @@ const SettingsCulturePage = () => {
                 <IconButton icon={<PlusIcon />} onClick={handleAdd}>
                     Добавить
                 </IconButton>
-                <Table height={420} data={data} loading={!data.length}>
+                <Table height={420} data={data} loading={isLoading}>
                     <Column fullText width={100}>
                         <HeaderCell>Название</HeaderCell>
                         <EditableCell dataKey="name" onChange={handleChange} />
                     </Column>
 
-                    <Column fullText width={200}>
+                    <Column fullText width={100}>
                         <HeaderCell>Минимальное количество осадков</HeaderCell>
                         <EditableCell type="number" dataKey="min_permissible_precipitation_level" onChange={handleChange} />
                     </Column>
 
-                    <Column fullText width={200}>
+                    <Column fullText width={100}>
                         <HeaderCell>Максимальное количество осадков</HeaderCell>
                         <EditableCell type="number" dataKey="max_permissible_precipitation_level" onChange={handleChange} />
+                    </Column>
+
+                    <Column fullText width={100}>
+                        <HeaderCell>Минимальная сумма активных температур</HeaderCell>
+                        <EditableCell type="number" dataKey="min_active_temperature_level" onChange={handleChange} />
+                    </Column>
+
+                    <Column fullText width={100}>
+                        <HeaderCell>Максимальная сумма активных температур</HeaderCell>
+                        <EditableCell type="number" dataKey="max_active_temperature_level" onChange={handleChange} />
                     </Column>
 
                     <Column fullText width={200}>

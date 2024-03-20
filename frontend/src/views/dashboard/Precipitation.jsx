@@ -25,6 +25,18 @@ const Precipitation = () => {
             .map((obj) => {
                 return { dt: format(obj.dateTime, 'yyyy-MM-dd HH:mm:ss'), c: 6, ch: 5, v: Number(obj.precipitation) };
             });
+
+        const editedDataDB = editData
+            .filter((obj) => obj.status === 'Edited')
+            .map((obj) => {
+                return {
+                    date: format(obj.dateTime, 'yyyy-MM-dd HH:mm:ss'),
+                    value_after: Number(obj.precipitation),
+                    station_id: station.id,
+                    user: localStorage.getItem('id')
+                };
+            });
+
         fieldClimateAPI.setRainData(station.id, data).then(() => {
             fieldClimateAPI
                 .getForecast(station.id, Math.round(addHours(date[0], 3) / 1000), Math.round(addHours(date[1], 3) / 1000), freq)
@@ -33,6 +45,20 @@ const Precipitation = () => {
                         getChartData(response.data.length ? { countPrecipitation: response.data[1].values.sum } : {}, response.dates)
                     );
                 });
+            editedDataDB.map((el) => {
+                axios.post(
+                    ROBOLIFE2_BACKEND_API.base_url + '/api/metric_changes/c/',
+                    {
+                        station_id: el.station_id,
+                        user: el.user,
+                        date: el.date,
+                        value_after: el.value_after
+                    },
+                    {
+                        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+                    }
+                );
+            });
             fieldClimateAPI
                 .getCalculationRain(station.id, 5, Math.round(addHours(date[0], 3) / 1000), Math.round(addHours(date[1], 3) / 1000))
                 .then((response) => {
@@ -53,15 +79,15 @@ const Precipitation = () => {
             .getForecast(station.id, Math.round(addHours(date[0], 3) / 1000), Math.round(addHours(date[1], 3) / 1000), freq)
             .then((response) => {
                 setChartData(getChartData(response.data.length ? { countPrecipitation: response.data[1].values.sum } : {}, response.dates));
-                let tableData = [];
+                let table = [];
                 response.dates.forEach((value, index) => {
-                    tableData.push({
+                    table.push({
                         id: index,
                         dateTime: Number(Date.parse(value)),
                         precipitation: response.data[1].values.sum[index]
                     });
                 });
-                setTableData(tableData);
+                setTableData(table);
             });
         fieldClimateAPI
             .getCalculationRain(station.id, 5, Math.round(addHours(date[0], 3) / 1000), Math.round(addHours(date[1], 3) / 1000))

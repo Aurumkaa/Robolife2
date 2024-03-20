@@ -2,7 +2,8 @@ export const initialState = {
     id: '00001F76',
     name: '',
     deviceType: '',
-    lastData: ''
+    lastData: '',
+    coordinates: ['', '']
 };
 
 const stationReducer = (state = initialState, action) => {
@@ -13,7 +14,8 @@ const stationReducer = (state = initialState, action) => {
                 id: action.id,
                 name: action.name,
                 deviceType: action.deviceType,
-                lastData: action.lastData
+                lastData: action.lastData,
+                coordinates: action.coordinates
             };
         default:
             return state;

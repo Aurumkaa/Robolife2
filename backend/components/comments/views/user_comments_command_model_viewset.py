@@ -24,5 +24,6 @@ class UserCommentsCommandModelViewSet(CommandModelViewSet):
         user_comment_model = serializer.save()
         self.service_class.create_user_notifications(
             user_comment_model,
+            None,
             NotificationsTypeEnum.COMMENT_CREATED
         )

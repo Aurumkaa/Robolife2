@@ -1,10 +1,7 @@
 // material-ui
-import { useTheme, styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import {
     Avatar,
-    Button,
-    Card,
-    CardContent,
     Chip,
     Divider,
     Grid,
@@ -13,16 +10,11 @@ import {
     ListItemAvatar,
     ListItemSecondaryAction,
     ListItemText,
-    Stack,
     Typography
 } from '@mui/material';
 
 // assets
-import { IconBrandTelegram, IconBuildingStore, IconMailbox, IconPhoto } from '@tabler/icons';
-import User1 from 'assets/images/users/user-round.svg';
-import { useEffect, useState } from 'react';
-import { PARAMS_CONVERT, ROBOLIFE2_BACKEND_API } from '../../../../constants/Constants';
-import axios from 'axios';
+import { PARAMS_CONVERT } from '../../../../constants/Constants';
 import { useDispatch } from 'react-redux';
 
 // styles
@@ -98,76 +90,102 @@ const NotificationList = ({ notifications }) => {
         >
             <Divider />
             {notifications.map((value, index) => {
-                return (
-                    <div key={index}>
-                        <ListItemWrapper onClick={() => OpenModal(value)}>
-                            <ListItem alignItems="center">
-                                <ListItemAvatar>
-                                    <Avatar
-                                        alt={`${value.comment.user.first_name} ${value.comment.user.last_name}`}
-                                    >{`${value.comment.user.first_name[0]}${value.comment.user.last_name[0]}`}</Avatar>
-                                </ListItemAvatar>
-                                <ListItemText primary={`${value.comment.user.first_name} ${value.comment.user.last_name}`} />
-                                <ListItemSecondaryAction>
-                                    <Grid container justifyContent="flex-end">
-                                        <Grid item xs={12}>
-                                            <Typography style={{ marginBottom: '3.5em' }} variant="caption" display="block" gutterBottom>
-                                                {new Date(Date.parse(value.comment.created)).toLocaleString()}
-                                            </Typography>
+                if (value.notification_type === 'COMMENT_CREATED') {
+                    return (
+                        <div key={index}>
+                            <ListItemWrapper onClick={() => OpenModal(value)}>
+                                <ListItem alignItems="center">
+                                    <ListItemAvatar>
+                                        <Avatar
+                                            alt={`${value.comment.user.first_name} ${value.comment.user.last_name}`}
+                                        >{`${value.comment.user.first_name[0]}${value.comment.user.last_name[0]}`}</Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText primary={`${value.comment.user.first_name} ${value.comment.user.last_name}`} />
+                                    <ListItemSecondaryAction>
+                                        <Grid container justifyContent="flex-end">
+                                            <Grid item xs={12}>
+                                                <Typography
+                                                    style={{ marginBottom: '3.5em' }}
+                                                    variant="caption"
+                                                    display="block"
+                                                    gutterBottom
+                                                >
+                                                    {new Date(Date.parse(value.comment.created)).toLocaleString()}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+                                <Grid container direction="column" className="list-container">
+                                    <Grid item xs={12} sx={{ pb: 2 }}>
+                                        <Typography variant="subtitle2">
+                                            Прокомментировал параметр "{PARAMS_CONVERT[value.comment.weather_metric.name]}" от{' '}
+                                            {new Date(Date.parse(value.comment.weather_metric.date)).toLocaleDateString()}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Grid container>
+                                            <Grid item>
+                                                <Chip label="Комментарий" sx={chipCommentSX} />
+                                            </Grid>
                                         </Grid>
                                     </Grid>
-                                </ListItemSecondaryAction>
-                            </ListItem>
-                            <Grid container direction="column" className="list-container">
-                                <Grid item xs={12} sx={{ pb: 2 }}>
-                                    <Typography variant="subtitle2">
-                                        Прокомментировал параметр "{PARAMS_CONVERT[value.comment.weather_metric.name]}" от{' '}
-                                        {new Date(Date.parse(value.comment.weather_metric.date)).toLocaleDateString()}
-                                    </Typography>
                                 </Grid>
-                                <Grid item xs={12}>
-                                    <Grid container>
-                                        <Grid item>
-                                            <Chip label="Комментарий" sx={chipCommentSX} />
+                            </ListItemWrapper>
+                            <Divider />
+                        </div>
+                    );
+                } else if (value.notification_type === 'METRICS_UPDATED') {
+                    return (
+                        <div key={index}>
+                            <ListItemWrapper>
+                                <ListItem alignItems="center">
+                                    <ListItemAvatar>
+                                        <Avatar
+                                            alt={`${value.metric_change.user.first_name} ${value.metric_change.user.last_name}`}
+                                        >{`${value.metric_change.user.first_name[0]}${value.metric_change.user.last_name[0]}`}</Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText
+                                        primary={`${value.metric_change.user.first_name} ${value.metric_change.user.last_name}`}
+                                    />
+
+                                    <ListItemSecondaryAction>
+                                        <Grid container justifyContent="flex-end">
+                                            <Grid item xs={12}>
+                                                <Typography
+                                                    style={{ marginBottom: '3.5em' }}
+                                                    variant="caption"
+                                                    display="block"
+                                                    gutterBottom
+                                                >
+                                                    {new Date(Date.parse(value.metric_change.created)).toLocaleString()}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+                                <Grid container direction="column" className="list-container">
+                                    <Grid item xs={12} sx={{ pb: 2 }}>
+                                        <Typography variant="subtitle2">
+                                            Пользователь изменил параметр "Осадки" за{' '}
+                                            {new Date(Date.parse(value.metric_change.date)).toLocaleString()} на{' '}
+                                            {value.metric_change.value_after} mm
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Grid container>
+                                            <Grid item>
+                                                <Chip label="Изменение параметра" sx={chipChangeSX} />
+                                            </Grid>
                                         </Grid>
                                     </Grid>
                                 </Grid>
-                            </Grid>
-                        </ListItemWrapper>
-                        <Divider />
-                    </div>
-                );
+                            </ListItemWrapper>
+                            <Divider />
+                        </div>
+                    );
+                }
             })}
-            {/*<ListItemWrapper>*/}
-            {/*    <ListItem alignItems="center">*/}
-            {/*        <ListItemAvatar>*/}
-            {/*            <Avatar alt="Обджект Обджектович">ОО</Avatar>*/}
-            {/*        </ListItemAvatar>*/}
-            {/*        <ListItemText primary="Обджект Обджектович" />*/}
-            {/*        <ListItemSecondaryAction>*/}
-            {/*            <Grid container justifyContent="flex-end">*/}
-            {/*                <Grid item xs={12}>*/}
-            {/*                    <Typography style={{ marginBottom: '3.5em' }} variant="caption" display="block" gutterBottom>*/}
-            {/*                        {'11.11.2022 16:29'}*/}
-            {/*                    </Typography>*/}
-            {/*                </Grid>*/}
-            {/*            </Grid>*/}
-            {/*        </ListItemSecondaryAction>*/}
-            {/*    </ListItem>*/}
-            {/*    <Grid container direction="column" className="list-container">*/}
-            {/*        <Grid item xs={12} sx={{ pb: 2 }}>*/}
-            {/*            <Typography variant="subtitle2">Изменил параметр "Осадки" от 16.10.2022 16:00</Typography>*/}
-            {/*        </Grid>*/}
-            {/*        <Grid item xs={12}>*/}
-            {/*            <Grid container>*/}
-            {/*                <Grid item>*/}
-            {/*                    <Chip label="Изменение" sx={chipChangeSX} />*/}
-            {/*                </Grid>*/}
-            {/*            </Grid>*/}
-            {/*        </Grid>*/}
-            {/*    </Grid>*/}
-            {/*</ListItemWrapper>*/}
-            {/*<Divider />*/}
         </List>
     );
 };

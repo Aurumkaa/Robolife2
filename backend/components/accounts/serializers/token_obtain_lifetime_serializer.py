@@ -7,7 +7,6 @@ class TokenObtainLifetimeSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
         refresh = self.get_token(self.user)
-        # data['lifetime'] = int(refresh.access_token.lifetime.total_seconds())
         data['id'] = self.user.id
         data['is_superuser'] = self.user.is_superuser
         data['username'] = self.user.username

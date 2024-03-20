@@ -3,8 +3,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_204_NO_CONTENT
 
-from components.comments.serializers import UserCommentsCreateModelSerializer
 from components.notifications.models import UserNotificationsModel
+from components.notifications.serializers import UserNotificationsModelSerializer
 from shared.api.views import CommandModelViewSet
 from shared.exceptions import IncorrectParametersError
 
@@ -13,7 +13,7 @@ class UserNotificationsCommandModelViewSet(CommandModelViewSet):
     """CommandModelViewSet для работы с уведомлениями пользователя"""
 
     queryset = UserNotificationsModel.objects.all()
-    serializer_class = UserCommentsCreateModelSerializer
+    serializer_class = UserNotificationsModelSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = None
 
