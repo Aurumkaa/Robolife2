@@ -41,8 +41,10 @@ const WelcomePage = () => {
     }, [station.id]);
 
     useEffect(() => {
-        client
-            .get(ROBOLIFE2_BACKEND_API.base_url + '/api/accounts/settings_deviation/q/' + `?user=${localStorage.getItem('id')}`, {})
+        axios
+            .get(ROBOLIFE2_BACKEND_API.base_url + '/api/accounts/settings_deviation/q/' + `?user=${localStorage.getItem('id')}`, {
+                headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+            })
             .then(({ data }) => {
                 SettingsParamDeviation(data, setDeviation, lastParams);
                 console.log(deviation);
