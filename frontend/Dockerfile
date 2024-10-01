@@ -1,7 +1,7 @@
 # The first stage
 # Build React static files
 FROM node:16.13.2-slim as build
-
+ARG BACKEND_URL
 ENV REACT_APP_BACKEND_URL ${BACKEND_URL}
 
 WORKDIR /app/frontend
