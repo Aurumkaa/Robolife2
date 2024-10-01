@@ -7,7 +7,6 @@ import ChartMainCard from '../../ui-component/extended/ChartMainCard';
 import { addHours } from 'date-fns';
 import axios from 'axios';
 import MainCardChartAndTable from '../../ui-component/cards/MainCardChartAndTable';
-import { client } from '../../utils/axiosClient';
 
 const Temperature = () => {
     const [chartData, setChartData] = useState([]);

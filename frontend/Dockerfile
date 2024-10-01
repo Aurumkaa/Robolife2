@@ -2,6 +2,8 @@
 # Build React static files
 FROM node:16.13.2-slim as build
 
+ENV REACT_APP_BACKEND_URL ${BACKEND_URL}
+
 WORKDIR /app/frontend
 COPY ./frontend/package.json ./
 COPY ./frontend/package-lock.json ./

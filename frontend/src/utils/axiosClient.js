@@ -1,7 +1,5 @@
 import { createAxiosClient } from '../clients/createAxiosClient';
-
-const REFRESH_TOKEN_URL = 'http://localhost:8000/api/accounts/token/refresh/';
-const BASE_URL = 'http://localhost:8000';
+import { ROBOLIFE2_BACKEND_API } from '../constants/Constants';
 
 function getCurrentAccessToken() {
     return localStorage.getItem('token');
@@ -18,12 +16,12 @@ function setRefreshedTokens(token) {
 async function logout() {
     console.log('logout...');
     localStorage.clear();
-    window.location.replace('http://127.0.0.1:3000/login');
+    window.location.replace('/login');
 }
 
 export const client = createAxiosClient({
     options: {
-        baseURL: BASE_URL,
+        baseURL: ROBOLIFE2_BACKEND_API.base_url,
         timeout: 300000,
         headers: {
             'Content-Type': 'application/json'
@@ -32,7 +30,7 @@ export const client = createAxiosClient({
     },
     getCurrentAccessToken,
     getCurrentRefreshToken,
-    refreshTokenUrl: REFRESH_TOKEN_URL,
+    refreshTokenUrl: ROBOLIFE2_BACKEND_API.base_url + '/api/accounts/token/refresh/',
     logout,
     setRefreshedTokens
 });
