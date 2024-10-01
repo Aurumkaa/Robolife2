@@ -1,22 +1,86 @@
-import hmacSHA256 from 'crypto-js/hmac-sha256';
 import { FIELD_CLIMATE_API } from '../constants/Constants';
 
+const successLoginEvent = new Event('successLogin');
+const failLoginEvent = new Event('failedLogin');
+
 const fieldClimateAPI = {
+    loginPayload: {
+        grant_type: 'password',
+        client_id: 'FieldclimateNG',
+        client_secret: '618a5baf48287eecbdfc754e9c933a',
+        username: 'oao kuban',
+        password: '8523700'
+    },
+
+    currentTokenData: null,
+    isRefreshing: false,
+    loginEmitter: document.createElement('div'),
+
+    async login() {
+        try {
+            this.isRefreshing = true;
+            const res = await fetch('https://oauth.fieldclimate.com/token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(this.loginPayload)
+            });
+
+            if (!res.ok) throw new Error('Login error');
+
+            const result = await res.json();
+            result['expires_on'] = result['expires_in'] * 1000 + new Date().getTime();
+            this.loginEmitter.dispatchEvent(successLoginEvent);
+            this.currentTokenData = result;
+        } catch (err) {
+            this.loginEmitter.dispatchEvent(failLoginEvent);
+            throw err;
+        } finally {
+            this.isRefreshing = false;
+        }
+    },
+
+    checkIsLoginExpired() {
+        if (!this.currentTokenData) return true;
+        const currentDate = new Date().getTime();
+        return currentDate > this.currentTokenData['expires_on'] - 1000;
+    },
+
+    waitForLogin() {
+        return new Promise((resolve, reject) => {
+            const onSuccess = () => {
+                this.loginEmitter.removeEventListener(successLoginEvent.type, onSuccess);
+                resolve();
+            };
+            const onFail = () => {
+                this.loginEmitter.removeEventListener(failLoginEvent.type, onFail);
+                reject();
+            };
+            this.loginEmitter.addEventListener(successLoginEvent.type, onSuccess);
+            this.loginEmitter.addEventListener(failLoginEvent.type, onFail);
+        });
+    },
+
     async getFetch(params) {
         const method = params.method;
         const body = params.body;
-        const public_key = FIELD_CLIMATE_API.publicKey;
-        const private_key = FIELD_CLIMATE_API.privateKey;
         const baseurl = FIELD_CLIMATE_API.fieldClimateUrl;
         const timestamp = new Date().toUTCString();
-        const content_to_sign = params.method + params.request + timestamp + public_key;
-        const signature = hmacSHA256(content_to_sign, private_key);
-        const hmac_str = 'hmac ' + public_key + ':' + signature;
+
+        if (this.checkIsLoginExpired()) {
+            if (this.isRefreshing) {
+                await this.waitForLogin();
+            } else {
+                await this.login();
+            }
+        }
+
         const url = baseurl + params.request;
         const parameters = {
             headers: {
                 Accept: 'application/json',
-                Authorization: hmac_str,
+                Authorization: `Bearer ${this.currentTokenData['access_token']}`,
                 'Request-Date': timestamp
             },
             method,
@@ -81,7 +145,7 @@ const fieldClimateAPI = {
     getLastParams(stationId = '00001F76') {
         let params = {
             method: 'GET',
-            request: '/data/' + stationId + '/hourly/last/1'
+            request: '/data/' + stationId + '/hourly/last/24'
         };
         return fieldClimateAPI.getFetch(params);
     }
