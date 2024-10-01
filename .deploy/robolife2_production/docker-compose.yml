@@ -20,7 +20,7 @@ services:
       context: ../../
       dockerfile: ./frontend/Dockerfile
       args:
-        BACKEND_URL: http://non-proxied.xn--b1ahgiuw.xn--p1ai
+        BACKEND_URL: https://robolife2.xn--b1ahgiuw.xn--p1ai
     container_name: nginx_proxy_server
     depends_on:
       - django_server
