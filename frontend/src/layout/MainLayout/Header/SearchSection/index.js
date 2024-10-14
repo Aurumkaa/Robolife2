@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
+import axios from 'axios';
+import { ROBOLIFE2_BACKEND_API } from '../../../../constants/Constants';
 
 // material-ui
 import { useTheme, styled } from '@mui/material/styles';
@@ -175,6 +177,11 @@ const SearchSection = () => {
 
     const handleChange = (event) => {
         let stationData = stations.find((station) => station.id === event.target.value);
+
+        axios.delete(ROBOLIFE2_BACKEND_API.base_url + ROBOLIFE2_BACKEND_API.notification_url + 'c/' + localStorage.getItem('id') + '/', {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        });
+
         dispatch({
             type: 'SET_STATION',
             id: stationData.id,

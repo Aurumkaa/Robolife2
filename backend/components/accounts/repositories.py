@@ -10,6 +10,13 @@ class UserRepository:
 
     model_class = UserModel
 
+
+    def get_all_users(self) -> list[UserModel]:
+        """Получить список всех пользователей"""
+
+        return self.model_class.objects.all()
+
+
     def get_all_users_without_specified(self, users: Sequence[int]) -> list[UserModel]:
         """Получить список пользователей за исключением указанных"""
 

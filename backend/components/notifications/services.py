@@ -17,20 +17,27 @@ class UserNotificationService:
         self.__repository_class = self.__repository_class()
         self.__user_repository_class = self.__user_repository_class()
 
-    def create_user_notifications(self,
-                                  user_comment: UserCommentsModel,
-                                  user_update_metric: MetricChangeModel,
-                                  notification_type: NotificationsTypeEnum) -> None:
-        """Создать уведомления для всех пользователей кроме его автора"""
+    def create_user_notifications(
+            self, 
+            user_comment: UserCommentsModel, 
+            user_update_metric: MetricChangeModel, 
+            crop_recommendation: str, 
+            notification_type: NotificationsTypeEnum, 
+    ) -> None:
+
+        """Создать уведомления для всех пользователей"""
 
         if user_comment:
-            users = self.__user_repository_class.get_all_users_without_specified([user_comment.user.id])
+            users = self.__user_repository_class.get_all_users_without_specified([user_comment.user.id])  # Исключаем из рассылки автора уведомления
         elif user_update_metric:
-            users = self.__user_repository_class.get_all_users_without_specified([user_update_metric.user.id])
+            users = self.__user_repository_class.get_all_users_without_specified([user_update_metric.user.id])  #
+        else:
+            users = self.__user_repository_class.get_all_users()
 
         self.__repository_class.create_user_notifications(
-            users,
-            user_update_metric,
-            user_comment,
-            notification_type
+            users, 
+            user_update_metric, 
+            user_comment, 
+            crop_recommendation, 
+            notification_type, 
         )

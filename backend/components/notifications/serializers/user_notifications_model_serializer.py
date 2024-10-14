@@ -16,9 +16,10 @@ class UserNotificationsModelSerializer(ModelSerializer):
     class Meta:
         model = UserNotificationsModel
         fields = [
-            'id',
-            'comment',
-            'metric_change',
-            'user',
-            'notification_type',
+            'id', 
+            'comment', 
+            'metric_change', 
+            'user', 
+            'recommendation', 
+            'notification_type', 
         ]

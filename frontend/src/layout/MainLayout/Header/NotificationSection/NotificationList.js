@@ -29,6 +29,10 @@ const ListItemWrapper = styled('div')(({ theme }) => ({
     }
 }));
 
+// Crops icons
+import sugar_beet_icon from 'assets/images/icons/crops/svg/sugar-beet.svg';
+import unlisted_crop_icon from 'assets/images/icons/crops/svg/unlisted-crop.svg';
+
 // ==============================|| NOTIFICATION LIST ITEM ||============================== //
 
 const NotificationList = ({ notifications }) => {
@@ -52,19 +56,26 @@ const NotificationList = ({ notifications }) => {
 
     const chipSX = {
         height: 24,
-        padding: '0 6px'
+        padding: '0 6px',
+        marginRight: '5px'
     };
+
     const chipCommentSX = {
         ...chipSX,
-        color: theme.palette.success.dark,
-        backgroundColor: theme.palette.grey.A100,
-        marginRight: '5px'
+        color: theme.palette.secondary.dark,
+        backgroundColor: theme.palette.secondary.light
     };
 
     const chipChangeSX = {
         ...chipSX,
         color: theme.palette.warning.dark,
         backgroundColor: theme.palette.warning.light
+    };
+
+    const chipRecommendationSX = {
+        ...chipSX,
+        color: theme.palette.background.default,
+        backgroundColor: theme.palette.success.dark
     };
 
     return (
@@ -184,9 +195,71 @@ const NotificationList = ({ notifications }) => {
                             <Divider />
                         </div>
                     );
+                } else if (value.notification_type === 'CROPS_RECOMMENDATIONS_RECEIVED') {
+                    var crop_recommendation = JSON.parse(value.recommendation);
+                    var crop_icon = null;
+
+                    switch (crop_recommendation.crop_name) {
+                        case 'Сахарная свёкла':
+                            crop_icon = sugar_beet_icon;
+                            break;
+
+                        default:
+                            crop_icon = unlisted_crop_icon;
+                            break;
+                    }
+
+                    return (
+                        <div key={index}>
+                            <ListItemWrapper>
+                                <ListItem alignItems="center">
+                                    <ListItemAvatar>
+                                        <img src={crop_icon} alt={crop_recommendation.crop_name} />
+                                    </ListItemAvatar>
+                                    <ListItemText primary={<b>{crop_recommendation.crop_name}</b>}></ListItemText>
+                                    <ListItemSecondaryAction>
+                                        <Grid container justifyContent="flex-end">
+                                            <Grid item xs={12}>
+                                                <Typography
+                                                    style={{ marginBottom: '3.5em' }}
+                                                    variant="caption"
+                                                    display="block"
+                                                    gutterBottom
+                                                >
+                                                    {crop_recommendation.receipt_date}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+                                <Grid container direction="column" className="list-container">
+                                    <Grid item xs={12} sx={{ pb: 2 }}>
+                                        <Typography variant="subtitle2" style={{ color: 'black', marginRight: 10 }}>
+                                            {crop_recommendation.text}
+                                            <Typography
+                                                variant="subtitle2"
+                                                style={{ display: 'inline', color: theme.palette.warning.dark }}
+                                            >
+                                                <b> {crop_recommendation.day}</b>
+                                            </Typography>
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Grid container>
+                                            <Grid item>
+                                                <Chip label="Рекомендация" sx={chipRecommendationSX} />
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </ListItemWrapper>
+                            <Divider />
+                        </div>
+                    );
                 }
             })}
         </List>
     );
 };
+
 export default NotificationList;

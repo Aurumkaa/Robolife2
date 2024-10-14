@@ -150,9 +150,9 @@ input[disabled] {
   cursor: default!important;
 }
 
-.chip-notifications{
+.chip-notifications {
     margin-left: 10px !important;
-    margin-right: 25px !important;
+    margin-right: 25px; // !important;
 }
 
 @media (max-width: 901px) {

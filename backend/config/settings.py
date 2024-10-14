@@ -66,14 +66,15 @@ INSTALLED_APPS = [
 ]
 
 COMPONENTS = [
-    'components.metrics',
-    'components.accounts',
-    'components.comments',
-    'components.notifications',
-    'components.agriculture',
-    'components.neural_network',
-    'components.metrics_changes',
-    'components.feedback',
+    'components.metrics', 
+    'components.accounts', 
+    'components.comments', 
+    'components.notifications', 
+    'components.agriculture', 
+    'components.neural_network', 
+    'components.metrics_changes', 
+    'components.feedback', 
+    'components.forecast_update', 
 ]
 
 

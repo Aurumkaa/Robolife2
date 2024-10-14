@@ -1,7 +1,8 @@
 from django.db.models import (
-    ForeignKey,
-    CASCADE,
-    CharField,
+    ForeignKey, 
+    CASCADE, 
+    CharField, 
+    JSONField, 
 )
 
 from components.comments.models import UserCommentsModel
@@ -25,7 +26,7 @@ class UserNotificationsModel(BaseModel):
         MetricChangeModel, null=True,
         blank=True,
         on_delete=CASCADE,
-        verbose_name='Изменение метрки'
+        verbose_name='Изменение метрики'
     )
     user = ForeignKey(
         AUTH_USER_MODEL,
@@ -33,6 +34,9 @@ class UserNotificationsModel(BaseModel):
         on_delete=CASCADE,
         verbose_name='Пользователь'
     )
+
+    recommendation = JSONField(null=True, verbose_name='Рекомендация по выращиванию агрокультуры')
+
     notification_type = CharField(
         max_length=128,
         choices=NotificationsTypeEnum.choices,

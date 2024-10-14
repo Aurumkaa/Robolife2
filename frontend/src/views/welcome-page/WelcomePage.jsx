@@ -11,6 +11,7 @@ import { ROBOLIFE2_BACKEND_API } from '../../constants/Constants';
 import OtherCard from './OtherCard';
 import Other from './Other';
 import { client } from '../../utils/axiosClient';
+import openmeteoAPI from '../../clients/OpenMeteoForecastClient';
 
 const WelcomePage = () => {
     const [lastParams, setLastParams] = useState();
@@ -46,6 +47,28 @@ const WelcomePage = () => {
                     SettingsParamDeviation(data, setDeviation, response);
                 });
         });
+    }, [station?.id]);
+
+    useEffect(() => {
+        axios
+            .delete(ROBOLIFE2_BACKEND_API.base_url + ROBOLIFE2_BACKEND_API.notification_url + 'c/' + localStorage.getItem('id') + '/', {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            })
+            .then(() => {
+                openmeteoAPI.getForecastDataForChemicalTreatments(station.coordinates).then((response) => {
+                    axios.post(
+                        ROBOLIFE2_BACKEND_API.base_url + '/api/forecast_update/s/',
+                        {
+                            station_code: station.id,
+                            date: response['current_weather']['time'],
+                            forecast: response['hourly']
+                        },
+                        {
+                            headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+                        }
+                    );
+                });
+            });
     }, [station?.id]);
 
     const SettingsParamDeviation = (data, setDeviation, response) => {

@@ -66,13 +66,18 @@ const NotificationSection = () => {
     const anchorRef = useRef(null);
 
     const handleToggle = () => {
+        if (!prevOpen.current) {
+            document.getElementsByName('outer-chip-notifications')[0].style.visibility = 'hidden';
+        } else {
+            document.getElementsByName('outer-chip-notifications')[0].style.visibility = 'visible';
+        }
+
         setOpen((prevOpen) => !prevOpen);
     };
 
     const handleClose = (event) => {
-        if (anchorRef.current && anchorRef.current.contains(event.target)) {
-            return;
-        }
+        if (anchorRef.current && anchorRef.current.contains(event.target)) return;
+        document.getElementsByName('outer-chip-notifications')[0].style.visibility = 'visible';
         setOpen(false);
     };
 
@@ -85,13 +90,17 @@ const NotificationSection = () => {
     }, [open]);
 
     useEffect(() => {
-        axios
-            .get(ROBOLIFE2_BACKEND_API.base_url + ROBOLIFE2_BACKEND_API.notification_url + `q/?userId=${localStorage.getItem('id')}`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            })
-            .then(({ data }) => {
-                setNotifications(data);
-            });
+        const interval = setInterval(() => {
+            axios
+                .get(ROBOLIFE2_BACKEND_API.base_url + ROBOLIFE2_BACKEND_API.notification_url + `q/?userId=${localStorage.getItem('id')}`, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+                })
+                .then(({ data }) => {
+                    setNotifications(data);
+                });
+        }, 10000); // Milliseconds
+
+        return () => clearInterval(interval);
     }, []);
 
     const handleChange = (event) => {
@@ -116,6 +125,7 @@ const NotificationSection = () => {
                         mr: 2
                     }
                 }}
+                style={{ position: 'relative' }}
             >
                 <ButtonBase sx={{ borderRadius: '12px' }}>
                     <Avatar
@@ -140,6 +150,22 @@ const NotificationSection = () => {
                         <IconBell stroke={1.5} size="1.3rem" />
                     </Avatar>
                 </ButtonBase>
+                <Chip
+                    name="outer-chip-notifications"
+                    className="chip-notifications"
+                    size="small"
+                    label={notifications.length}
+                    sx={{
+                        color: theme.palette.background.default,
+                        bgcolor: theme.palette.warning.dark
+                    }}
+                    style={{
+                        marginRight: 0,
+                        position: 'absolute',
+                        top: -10,
+                        right: -10
+                    }}
+                />
             </Box>
             <Popper
                 placement={matchesXs ? 'bottom' : 'bottom-end'}
@@ -178,6 +204,7 @@ const NotificationSection = () => {
                                                                 color: theme.palette.background.default,
                                                                 bgcolor: theme.palette.warning.dark
                                                             }}
+                                                            style={{ marginRight: 25 }}
                                                         />
                                                     </Stack>
                                                 </Grid>

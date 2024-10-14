@@ -151,7 +151,7 @@ const Temperature = () => {
             })
             .then(({ data }) => {
                 const d = data?.find((el) => el.param_type === 'temperature');
-                setDeviation({ min: d.min, max: d.max });
+                if (d) setDeviation({ min: d.min, max: d.max });
             });
     }, []);
 
