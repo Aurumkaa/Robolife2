@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
 // material-ui
@@ -89,19 +89,22 @@ const NotificationSection = () => {
         prevOpen.current = open;
     }, [open]);
 
+    const fetchNotifications = useCallback(() => {
+        axios
+            .get(ROBOLIFE2_BACKEND_API.base_url + ROBOLIFE2_BACKEND_API.notification_url + `q/?userId=${localStorage.getItem('id')}`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            })
+            .then(({ data }) => {
+                setNotifications(data);
+            });
+    }, []);
+
     useEffect(() => {
-        const interval = setInterval(() => {
-            axios
-                .get(ROBOLIFE2_BACKEND_API.base_url + ROBOLIFE2_BACKEND_API.notification_url + `q/?userId=${localStorage.getItem('id')}`, {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-                })
-                .then(({ data }) => {
-                    setNotifications(data);
-                });
-        }, 10000); // Milliseconds
+        fetchNotifications();
+        const interval = setInterval(fetchNotifications, 10000); // Milliseconds
 
         return () => clearInterval(interval);
-    }, []);
+    }, [fetchNotifications]);
 
     const handleChange = (event) => {
         if (event?.target.value) setValue(event?.target.value);

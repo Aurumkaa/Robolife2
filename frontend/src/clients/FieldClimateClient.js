@@ -145,7 +145,7 @@ const fieldClimateAPI = {
     getLastParams(stationId = '00001F76') {
         let params = {
             method: 'GET',
-            request: '/data/' + stationId + '/hourly/last/24'
+            request: '/data/' + stationId + '/hourly/last/1'
         };
         return fieldClimateAPI.getFetch(params);
     }

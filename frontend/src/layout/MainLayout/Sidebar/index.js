@@ -31,7 +31,6 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
                 <PerfectScrollbar
                     component="div"
                     style={{
-                        height: !matchUpMd ? 'calc(100vh - 56px)' : 'calc(100vh - 88px)',
                         paddingLeft: '16px',
                         paddingRight: '16px'
                     }}
@@ -55,7 +54,7 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
         <Box component="nav" sx={{ flexShrink: { md: 0 }, width: matchUpMd ? drawerWidth : 'auto' }} aria-label="mailbox folders">
             <Drawer
                 container={container}
-                variant={matchUpMd ? 'persistent' : 'temporary'}
+                variant={'persistent'}
                 anchor="left"
                 open={drawerOpen}
                 onClose={drawerToggle}
@@ -65,9 +64,8 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
                         background: theme.palette.background.default,
                         color: theme.palette.text.primary,
                         borderRight: 'none',
-                        [theme.breakpoints.up('md')]: {
-                            top: '88px'
-                        }
+                        top: matchUpMd ? '88px' : '80px',
+                        height: matchUpMd ? 'calc(100vh - 88px)' : 'calc(100vh - 80px)'
                     }
                 }}
                 ModalProps={{ keepMounted: true }}

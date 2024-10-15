@@ -76,7 +76,10 @@ const setHeatMapOptions = (arr, setOptionsHeat) => {
                 moment(new Date()).format('DD.MM'),
                 moment(AddDay(new Date(), 1)).format('DD.MM'),
                 moment(AddDay(new Date(), 2)).format('DD.MM'),
-                moment(AddDay(new Date(), 3)).format('DD.MM')
+                moment(AddDay(new Date(), 3)).format('DD.MM'),
+                moment(AddDay(new Date(), 4)).format('DD.MM'),
+                moment(AddDay(new Date(), 5)).format('DD.MM'),
+                moment(AddDay(new Date(), 6)).format('DD.MM')
             ],
             title: null,
             reversed: true

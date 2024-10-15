@@ -1,10 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { CardContent, CardHeader, Divider, Typography } from '@mui/material';
 import OtherCard from './OtherCard';
 import fieldClimateAPI from '../../clients/FieldClimateClient';
 import { getChartData } from '../../utils/ChartUtils';
 import { useSelector } from 'react-redux';
 import openmeteoAPI from '../../clients/OpenMeteoForecastClient';
+import { Loader } from 'rsuite';
+
+const AddDay = (d, cnt) => {
+    var dat = new Date(d);
+    dat.setDate(dat.getDate() + cnt);
+    return dat;
+};
 
 const Other = () => {
     const station = useSelector((state) => state.station);
@@ -13,31 +20,39 @@ const Other = () => {
     const [frost, setFrost] = useState(false);
     const [forecastDataTemp, setForecastDataTemp] = useState([]);
     const [resultHumidity, setResultHumidity] = useState({ status: false, fact: 0, min: 0 });
+    const [isDataLoading, setIsDataLoading] = useState(true);
 
-    const AddDay = (d, cnt) => {
-        var dat = new Date(d);
-        dat.setDate(dat.getDate() + cnt);
-        return dat;
-    };
+    const fetchData = useCallback(async () => {
+        try {
+            setIsDataLoading(true);
+            await Promise.all([
+                fieldClimateAPI
+                    .getForecast(station.id, Math.round(AddDay(new Date(), -3).getTime() / 1000), Math.round(new Date().getTime() / 1000))
+                    .then((response) => {
+                        setLastDataHumidity(
+                            getChartData(response.data.length ? { humidity: response.data[4].values.time } : {}, response.dates)
+                        );
+                    }),
+
+                fieldClimateAPI
+                    .getForecast(station.id, Math.round(AddDay(new Date(), -4).getTime() / 1000), Math.round(new Date().getTime() / 1000))
+                    .then((response) => {
+                        setLastDataTemp(
+                            getChartData(response.data.length ? { averageTemperature: response.data[5].values.avg } : {}, response.dates)
+                        );
+                    }),
+                openmeteoAPI.getForecastDataForChemicalTreatments(station.coordinates).then((response) => {
+                    setForecastDataTemp(response);
+                })
+            ]);
+        } finally {
+            setIsDataLoading(false);
+        }
+    }, [station.coordinates, station.id]);
 
     useEffect(() => {
-        fieldClimateAPI
-            .getForecast(station.id, Math.round(AddDay(new Date(), -3).getTime() / 1000), Math.round(new Date().getTime() / 1000))
-            .then((response) => {
-                setLastDataHumidity(getChartData(response.data.length ? { humidity: response.data[4].values.time } : {}, response.dates));
-            });
-
-        fieldClimateAPI
-            .getForecast(station.id, Math.round(AddDay(new Date(), -4).getTime() / 1000), Math.round(new Date().getTime() / 1000))
-            .then((response) => {
-                setLastDataTemp(
-                    getChartData(response.data.length ? { averageTemperature: response.data[5].values.avg } : {}, response.dates)
-                );
-            });
-        openmeteoAPI.getForecastDataForChemicalTreatments(station.coordinates).then((response) => {
-            setForecastDataTemp(response);
-        });
-    }, [station.id]);
+        fetchData();
+    }, [fetchData]);
 
     useEffect(() => {
         calcResHumidity(lastDataHumidity);
@@ -80,11 +95,14 @@ const Other = () => {
         <div style={{ marginTop: '30px' }}>
             <CardHeader title="Другое" />
             <Divider />
-            <CardContent>
-                <Typography></Typography>
-                <OtherCard type="humidity" result={resultHumidity} lastData={lastDataHumidity} color={'#84c184'} />
-                {frost && <OtherCard type="frost" result={{ status: frost }} color={'#30aaad'} />}
-            </CardContent>
+            {isDataLoading ? (
+                <Loader style={{ marginTop: '24px' }} content={'Загрузка...'}></Loader>
+            ) : (
+                <CardContent>
+                    <OtherCard type="humidity" result={resultHumidity} lastData={lastDataHumidity} color={'#84c184'} />
+                    {frost && <OtherCard type="frost" result={{ status: frost }} color={'#30aaad'} />}
+                </CardContent>
+            )}
         </div>
     );
 };
