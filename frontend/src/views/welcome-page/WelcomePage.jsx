@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import MainCard from '../../ui-component/cards/MainCard';
 import fieldClimateAPI from '../../clients/FieldClimateClient';
 import { useSelector } from 'react-redux';
@@ -12,6 +12,8 @@ import OtherCard from './OtherCard';
 import Other from './Other';
 import { client } from '../../utils/axiosClient';
 import openmeteoAPI from '../../clients/OpenMeteoForecastClient';
+import { Loader } from 'rsuite';
+import { dictDiviation } from '../user-page/user-setting-deviations/DeviationsSubscribe';
 
 const WelcomePage = () => {
     const [lastParams, setLastParams] = useState();
@@ -35,19 +37,28 @@ const WelcomePage = () => {
         }
     }, []);
 
-    useEffect(() => {
-        fieldClimateAPI.getLastParams(station.id).then((response) => {
+    const [isParamsLoading, setIsParamsLoading] = useState(true);
+
+    const fetchFieldClimateParams = useCallback(async () => {
+        try {
+            setIsParamsLoading(true);
+            const response = await fieldClimateAPI.getLastParams(station.id);
             setLastParams(response);
-            axios
-                .get(ROBOLIFE2_BACKEND_API.base_url + '/api/accounts/settings_deviation/q/' + `?user=${localStorage.getItem('id')}`, {
+            const { data } = await axios.get(
+                ROBOLIFE2_BACKEND_API.base_url + '/api/accounts/settings_deviation/q/' + `?user=${localStorage.getItem('id')}`,
+                {
                     headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
-                })
-                .then(({ data }) => {
-                    console.log({ data });
-                    SettingsParamDeviation(data, setDeviation, response);
-                });
-        });
-    }, [station?.id]);
+                }
+            );
+            SettingsParamDeviation(data, setDeviation, response);
+        } finally {
+            setIsParamsLoading(false);
+        }
+    }, [station.id]);
+
+    useEffect(() => {
+        fetchFieldClimateParams();
+    }, [fetchFieldClimateParams]);
 
     useEffect(() => {
         axios
@@ -69,7 +80,7 @@ const WelcomePage = () => {
                     );
                 });
             });
-    }, [station?.id]);
+    }, [station.coordinates, station.id]);
 
     const SettingsParamDeviation = (data, setDeviation, response) => {
         var temperature = data?.find(({ param_type }) => param_type === 'temperature');
@@ -142,65 +153,90 @@ const WelcomePage = () => {
         }
     };
 
-    const theme = useTheme();
+    const mappedParams = useMemo(() => {
+        if (!lastParams) return null;
+
+        return {
+            humidity: lastParams.data.find((item) => item.name_original === 'HC Relative humidity'),
+            wind: lastParams.data.find((item) => item.name_original === 'Wind speed'),
+            temperature: lastParams.data.find((item) => item.name_original === 'HC Air temperature'),
+            solarRadiation: lastParams.data.find((item) => item.name_original === 'Solar radiation'),
+            charge: lastParams.data.find((item) => item.name_original === 'Battery'),
+            precipitation: lastParams.data.find((item) => item.name_original === 'Precipitation')
+        };
+    }, [lastParams]);
+
+    console.log({ mappedParams });
 
     return (
-        <MainCard title={'Последние данные станции ' + station.name} subheader={'Данные обновлены ' + lastParams?.dates[0]}>
+        <MainCard
+            title={'Последние данные станции ' + station.name}
+            subheader={!isParamsLoading && 'Данные обновлены ' + lastParams?.dates[0]}
+        >
             <div>
-                <Grid container alignItems="stretch" justifyContent={'space-between'} spacing={1}>
-                    <Grid item xs={12} sm={6} md={4}>
-                        <TotalIncomeLightCard
-                            type="sun"
-                            param={`${lastParams?.data[0].values.avg[0]} W/m2`}
-                            color="#ffec00"
-                            deviation={deviation.solar_radiation}
-                        ></TotalIncomeLightCard>
+                {isParamsLoading ? (
+                    <Loader content={'Загрузка...'}>Загрузка</Loader>
+                ) : (
+                    <Grid container alignItems="stretch" justifyContent={'space-between'} spacing={1}>
+                        <Grid item xs={12} sm={6} md={4}>
+                            <TotalIncomeLightCard
+                                type="sun"
+                                param={mappedParams.temperature ? `${mappedParams.temperature.values.avg.at(-1)} W/m2` : 'Нет данных'}
+                                color="#ffec00"
+                                deviation={deviation.solar_radiation}
+                            ></TotalIncomeLightCard>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4}>
+                            <TotalIncomeLightCard
+                                type="prec"
+                                param={mappedParams.precipitation ? `${mappedParams.precipitation.values.sum.at(-1)} mm` : 'Нет данных'}
+                                color="#00abfb"
+                                deviation={deviation.prec}
+                            ></TotalIncomeLightCard>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4}>
+                            <TotalIncomeLightCard
+                                type="charge"
+                                param={mappedParams.charge ? `${mappedParams.charge.values.last.at(-1)} mV` : 'Нет данных'}
+                                color="#6f32be"
+                                deviation={deviation.charge}
+                            ></TotalIncomeLightCard>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4}>
+                            <TotalIncomeLightCard
+                                type="humidity"
+                                param={mappedParams.humidity ? `${mappedParams.humidity.values.avg.at(-1)} %` : 'Нет данных'}
+                                color="#597e8d"
+                                deviation={deviation.humidity}
+                            ></TotalIncomeLightCard>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4}>
+                            <TotalIncomeLightCard
+                                type="temperature"
+                                param={mappedParams.temperature ? `${mappedParams.temperature.values.avg.at(-1)} °C` : 'Нет данных'}
+                                color="#a905b6"
+                                deviation={deviation.temperature}
+                                info={
+                                    mappedParams.temperature
+                                        ? `min - ${mappedParams.temperature.values.min.at(
+                                              -1
+                                          )}/max - ${mappedParams.temperature.values.max.at(-1)}`
+                                        : undefined
+                                }
+                            ></TotalIncomeLightCard>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4}>
+                            <TotalIncomeLightCard
+                                type="wind"
+                                deviation={deviation.wind}
+                                param={mappedParams.wind ? `${mappedParams.wind.values.avg.at(-1)} °C` : 'Нет данных'}
+                                color="#9e9e9e"
+                                info={mappedParams.wind ? `max - ${mappedParams.wind.values.max.at(-1)}` : undefined}
+                            ></TotalIncomeLightCard>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={6} md={4}>
-                        <TotalIncomeLightCard
-                            type="prec"
-                            param={`${lastParams?.data[1].values.sum[0]} mm`}
-                            color="#00abfb"
-                            deviation={deviation.prec}
-                        ></TotalIncomeLightCard>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={4}>
-                        <TotalIncomeLightCard
-                            type="charge"
-                            param={`${lastParams?.data[3].values.last[0]} mV`}
-                            color="#6f32be"
-                            deviation={deviation.charge}
-                        ></TotalIncomeLightCard>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={4}>
-                        <TotalIncomeLightCard
-                            type="humidity"
-                            param={`${lastParams?.data[6].values.avg[0]} %`}
-                            color="#597e8d"
-                            deviation={deviation.humidity}
-                        ></TotalIncomeLightCard>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={4}>
-                        <TotalIncomeLightCard
-                            type="temperature"
-                            param={`${lastParams?.data[5].values.avg[0]} °C`}
-                            color="#a905b6"
-                            deviation={deviation.temperature}
-                            info={`min - ${lastParams?.data[5].values.min[0]}/max - ${lastParams?.data[5].values.max[0]}`}
-                        ></TotalIncomeLightCard>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={4}>
-                        <TotalIncomeLightCard
-                            type="wind"
-                            deviation={deviation.wind}
-                            param={`${lastParams?.data[2].values.avg[0]} m/s`}
-                            color="#9e9e9e"
-                            info={`max - ${lastParams?.data[2].values.max[0]}`}
-                        ></TotalIncomeLightCard>
-                    </Grid>
-                </Grid>
+                )}
             </div>
-
             <Other />
 
             <div style={{ marginTop: '0px' }}>

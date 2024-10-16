@@ -60,7 +60,7 @@ const generateNormal = (normal = [], dates = []) => {
             normal.find((obj) => `${obj.date.split('-')[1]}-${obj.date.split('-')[2]}` === `${value.split('-')[1]}-${value.split('-')[2]}`)
         );
     });
-    return res.map((value) => value.value);
+    return res.map((value) => value?.value || null);
 };
 
 export { getChartData, getWindRoseData, generateNormal };

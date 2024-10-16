@@ -37,7 +37,7 @@ import ModalDelete from './ModalDelete';
 import ModalCreate from './ModalCreate';
 import ModalUpdate from './ModalUpdate';
 
-const dictDiviation = [
+export const dictDiviation = [
     { type: 'humidity', value: 'Влажность воздуха', unit: '%' },
     { type: 'wind', value: 'Скорость ветра', unit: 'м/с' },
     { type: 'solar radiation', value: 'Солнечная радиация', unit: 'В/м2' },

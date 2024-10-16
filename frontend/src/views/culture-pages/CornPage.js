@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { addHours } from 'date-fns';
+import { addHours, subMonths, subYears } from 'date-fns';
 import fieldClimateAPI from '../../clients/FieldClimateClient';
 import { getChartData } from '../../utils/ChartUtils';
 import axios from 'axios';
@@ -23,7 +23,12 @@ const CornPage = () => {
 
     useEffect(() => {
         fieldClimateAPI
-            .getForecast(station.id, Math.round(addHours(date[0], 3) / 1000), Math.round(addHours(date[1], 3) / 1000), 'monthly')
+            .getForecast(
+                station.id,
+                Math.round(subMonths(new Date().getTime(), 12) / 1000),
+                Math.round(new Date().getTime() / 1000),
+                'monthly'
+            )
             .then((response) => {
                 setChartData(getChartData(response.data.length ? { countPrecipitation: response.data[1].values.sum } : {}, response.dates));
             });
@@ -89,6 +94,8 @@ const CornPage = () => {
                 setTableDataIncTemp(tableData);
             });
     }, [date[0], date[1], station.id]);
+
+    console.log({ chartData });
 
     return (
         <div>
