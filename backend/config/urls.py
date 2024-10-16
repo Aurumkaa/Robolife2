@@ -35,6 +35,7 @@ urlpatterns = [
     path('api/forecast_update/', include('components.forecast_update.urls')),
     path('api/notifications/', include('components.notifications.urls')),
     path('api/agriculture/', include('components.agriculture.urls')),
+    path('api/agriculture/harvest_recommendations', include('components.harvest_recomendation.urls')),
     path('api/neural-network/', include('components.neural_network.urls')),
     path('api/feedback/', include('components.feedback.urls')),
     # swagger urls
