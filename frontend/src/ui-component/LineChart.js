@@ -16,7 +16,7 @@ const LineChart = ({
     deviation,
     intervalTimeUnit,
     intervalCount,
-    comments = false,
+    comments = true,
     range = false,
     type = ''
 }) => {

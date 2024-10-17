@@ -25,5 +25,6 @@ class UserCommentsCommandModelViewSet(CommandModelViewSet):
         self.service_class.create_user_notifications(
             user_comment_model,
             None,
+            None,
             NotificationsTypeEnum.COMMENT_CREATED
         )

@@ -1,20 +1,14 @@
 const getChartData = (parameters = {}, dates = []) => {
     let res = [];
-    Object.entries(parameters).forEach((entry) => {
-        const [parameter, values] = entry;
-        if (!res.length) {
-            values.forEach((value, index) => {
-                res.push({
-                    [parameter]: value,
-                    date: Date.parse(dates[index])
-                });
-            });
-        } else {
-            values.forEach((value, index) => {
-                res[index][parameter] = value;
-            });
+    for (const [dateIndex, date] of dates.entries()) {
+        const item = {};
+        item.date = Date.parse(date);
+        for (const key in parameters) {
+            item[key] = parameters[key][dateIndex];
         }
-    });
+        res.push(item);
+    }
+
     return res;
 };
 

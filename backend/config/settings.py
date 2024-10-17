@@ -66,15 +66,15 @@ INSTALLED_APPS = [
 ]
 
 COMPONENTS = [
-    'components.metrics', 
-    'components.accounts', 
-    'components.comments', 
-    'components.notifications', 
-    'components.agriculture', 
-    'components.neural_network', 
-    'components.metrics_changes', 
-    'components.feedback', 
-    'components.forecast_update', 
+    'components.metrics',
+    'components.accounts',
+    'components.comments',
+    'components.notifications',
+    'components.agriculture',
+    'components.neural_network',
+    'components.metrics_changes',
+    'components.feedback',
+    'components.forecast_update',
 ]
 
 
@@ -138,6 +138,7 @@ DATABASES = {
         "PASSWORD": env("POSTGRES_PASSWORD"),
         "HOST": env("POSTGRES_HOST", default="localhost"),
         "PORT": env("POSTGRES_PORT", cast=int, default="5432"),
+        "ATOMIC_REQUESTS": True
     }
 }
 

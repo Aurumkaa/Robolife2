@@ -25,5 +25,6 @@ class UserMetricChangeCommandViewSet(CommandModelViewSet):
         self.service_class.create_user_notifications(
             None,
             user_updated_metric_model,
+            None,
             NotificationsTypeEnum.METRICS_UPDATED
         )

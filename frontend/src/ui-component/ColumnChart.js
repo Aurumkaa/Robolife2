@@ -10,7 +10,7 @@ import { CHART_PARAMETERS_ENUM } from '../constants/Constants';
 import { useDispatch } from 'react-redux';
 import am5locales_ru_RU from '@amcharts/amcharts5/locales/ru_RU';
 
-const ColumnChart = ({ titleChart, chartRootName, data, intervalTimeUnit, intervalCount, comments = false }) => {
+const ColumnChart = ({ titleChart, chartRootName, data, intervalTimeUnit, intervalCount, comments = true }) => {
     const dispatch = useDispatch();
 
     useLayoutEffect(() => {

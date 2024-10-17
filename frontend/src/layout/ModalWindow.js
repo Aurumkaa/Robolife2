@@ -5,6 +5,7 @@ import { Button, Modal, Input, FlexboxGrid } from 'rsuite';
 import RecipeReviewCard from './Comment';
 import axios from 'axios';
 import { ROBOLIFE2_BACKEND_API } from '../constants/Constants';
+import { message } from 'antd';
 
 const ModalWindow = () => {
     const [comments, setComments] = useState([]);
@@ -26,6 +27,18 @@ const ModalWindow = () => {
         }
     }, [modalParam.id]);
 
+    const handleClose = () => {
+        dispatch({
+            type: 'RESET_STATE_MODAL'
+        });
+    };
+
+    useEffect(() => {
+        if (!modalParam.status) {
+            setInput('');
+        }
+    }, [modalParam.status]);
+
     const handleSubmit = (event) => {
         event.preventDefault();
         axios
@@ -41,20 +54,9 @@ const ModalWindow = () => {
                 }
             )
             .then(() => {
-                setInput('');
-                axios
-                    .get(ROBOLIFE2_BACKEND_API.base_url + ROBOLIFE2_BACKEND_API.comments_url + `q/?metricId=${modalParam.id}`, {
-                        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
-                    })
-                    .then(({ data }) => {
-                        setComments(data);
-                    });
+                message.success('Комментарий добавлен');
+                handleClose();
             });
-    };
-    const handleClose = () => {
-        dispatch({
-            type: 'RESET_STATE_MODAL'
-        });
     };
 
     const divStyles = {
@@ -67,7 +69,7 @@ const ModalWindow = () => {
             <Modal.Header>
                 <p>{titleModalWindow}</p>
                 <p>{'Дата: ' + new Date(modalParam.date).toLocaleString()}</p>
-                <p>{`${modalParam.typeParam}: ${modalParam.value} мм`}</p>
+                {modalParam.typeParam && <p>{`${modalParam.typeParam}: ${modalParam.value} мм`}</p>}
             </Modal.Header>
             {comments.length ? (
                 <Modal.Body style={divStyles}>
