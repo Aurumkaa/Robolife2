@@ -7,6 +7,8 @@ import Loader from 'ui-component/Loader';
 import { red, green, amber } from '@mui/material/colors';
 import axios from 'axios';
 import { ROBOLIFE2_BACKEND_API } from '../../../constants/Constants';
+import fieldClimateAPI from '../../../clients/FieldClimateClient';
+import { useSelector } from 'react-redux';
 
 const bestCultureFormSchema = yup.object().shape({
     temperature: yup.number().required(),
@@ -20,7 +22,8 @@ const bestCultureFormSchema = yup.object().shape({
 
 const bestCultureFormOptions = [
     {
-        group: 'Информация о климате (средние значения за год)',
+        key: 'climate',
+        group: 'Климатические условия',
         inputs: [
             { id: 'temperature', label: 'Средняя температура, °C', type: 'number', xs: 12, md: 4 },
             { id: 'humidity', label: 'Относительная влажность, %', type: 'number', xs: 12, md: 4 },
@@ -28,6 +31,7 @@ const bestCultureFormOptions = [
         ]
     },
     {
+        key: 'soil',
         group: 'Параметры почвы',
         inputs: [
             { id: 'ph', label: 'Кислотность почвы, Ph', type: 'number', xs: 12, md: 6 },
@@ -62,6 +66,7 @@ const cultureStatisticsConfig = {
 const BestCulturePage = () => {
     const [isCalculationLoading, setIsCalculationLoading] = useState(false);
     const [cultureStatistics, setCultureStatistics] = useState(null);
+    const station = useSelector((state) => state.station);
 
     const formik = useFormik({
         validationSchema: bestCultureFormSchema,
@@ -73,15 +78,8 @@ const BestCulturePage = () => {
                 setIsCalculationLoading(true);
 
                 const res = await axios.post(ROBOLIFE2_BACKEND_API.base_url + ROBOLIFE2_BACKEND_API.harvest_recommendation, values);
-                const stat = Object.entries(res.data)
-                    .reduce((acc, [name, weight]) => {
-                        return [...acc, { name, weight }];
-                    }, [])
-                    .sort((a, b) => b.weight - a.weight);
-
-                console.log({ stat });
-
-                setCultureStatistics(stat);
+                res.data.sort((a, b) => b.weight - a.weight);
+                setCultureStatistics(res.data);
             } catch (err) {
                 console.error(err);
                 formikHelpers.setErrors({ submit: 'Не удалось провести расчет!' });
@@ -96,21 +94,49 @@ const BestCulturePage = () => {
         setCultureStatistics(null);
     }, [formik]);
 
+    const setClimateDataByMeteo = useCallback(
+        async (event) => {
+            event?.preventDefault();
+            const meteoData = await fieldClimateAPI.getLastParamsMonthly(station.id);
+            const temperature = meteoData.data.find((v) => v.name_original === 'HC Air temperature')?.values?.avg?.[0] ?? 0;
+            const humidity = meteoData.data.find((v) => v.name_original === 'HC Relative humidity')?.values?.avg?.[0] ?? 0;
+            const rainfall = meteoData.data.find((v) => v.name_original === 'Precipitation')?.values?.avg?.[0] ?? 0;
+
+            formik.setFieldValue('temperature', temperature);
+            formik.setFieldValue('humidity', humidity);
+            formik.setFieldValue('rainfall', rainfall);
+        },
+        [formik, station.id]
+    );
+
     return (
-        <MainCard title={'Прогноз оптимальности посева'}>
+        <MainCard title={'Прогноз оптимальности сева'}>
             {isCalculationLoading && <Loader />}
             <Box>
                 <Typography paragraph>
-                    С помощью данного инструмента вы можете определить наиболее подходящую культуру для посева на основании данных о климате
-                    и почве.
+                    С помощью данного инструмента вы можете определить наиболее подходящую культуру для сева на основании данных о климате и
+                    почве.
                 </Typography>
             </Box>
-            <Box component={'form'} noValidate onSubmit={formik.handleSubmit}>
+            <Box component={'form'} noValidate onSubmit={formik.handleSubmit} px={2}>
                 {bestCultureFormOptions.map((opt) => {
                     return (
-                        <Grid container spacing={2} marginTop={2} key={opt.group}>
-                            <Grid item xs={12}>
-                                <Typography variant={'h5'}>{opt.group}</Typography>
+                        <Grid container spacing={2} marginTop={2} key={opt.key}>
+                            <Grid container item xs={12} spacing={2}>
+                                <Box display="flex" gap={2} alignItems="center">
+                                    <Typography variant={'h5'}>{opt.group}</Typography>
+                                    {opt.key === 'climate' && (
+                                        <Button
+                                            size="small"
+                                            type="button"
+                                            variant="text"
+                                            style={{ textTransform: 'none' }}
+                                            onClick={setClimateDataByMeteo}
+                                        >
+                                            За последний месяц
+                                        </Button>
+                                    )}
+                                </Box>
                             </Grid>
                             {opt.inputs.map((inputOpt) => {
                                 const id = inputOpt.id;
@@ -158,7 +184,7 @@ const BestCulturePage = () => {
                     <Stack direction={'column'} spacing={2} marginTop={3}>
                         {cultureStatistics.map((item) => (
                             <Stack direction={'row'} spacing={2} justifyContent={'space-between'} key={item.name} sx={{ maxWidth: 320 }}>
-                                <Typography paragraph>{item.name}</Typography>
+                                <Typography paragraph>{item.name[0].toUpperCase() + item.name.slice(1)}</Typography>
                                 <Typography paragraph color={Object.values(cultureStatisticsConfig).find((o) => item.weight > o.min).color}>
                                     {item.weight}
                                 </Typography>

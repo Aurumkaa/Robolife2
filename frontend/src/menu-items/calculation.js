@@ -24,7 +24,7 @@ const calculation = {
         },
         {
             id: 'culture_prediction',
-            title: 'Прогноз оптимальности посева',
+            title: 'Прогноз оптимальности сева',
             type: 'item',
             url: '/calculation/best_culture',
             icon: icons.IconGrowth
