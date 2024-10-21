@@ -195,14 +195,14 @@ const SettingsCulturePage = () => {
     const handleAdd = () => {
         const nextData = Object.assign([], data);
         const row = {
-            id: nextData[nextData.length - 1].id + 1,
+            id: (nextData[nextData.length - 1]?.id || 0) + 1,
             name: '',
             min_permissible_precipitation_level: 0,
             max_permissible_precipitation_level: 0,
             min_active_temperature_level: 0,
             max_active_temperature_level: 0,
-            vegetation_season_start: new Date().toLocaleDateString(),
-            vegetation_season_end: new Date().toLocaleDateString(),
+            vegetation_season_start: new Date().getTime(),
+            vegetation_season_end: new Date().getTime(),
             status: 'ADD'
         };
         nextData.push(row);

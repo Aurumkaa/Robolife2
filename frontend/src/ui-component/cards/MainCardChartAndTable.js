@@ -61,7 +61,7 @@ const MainCardChartAndTable = ({
 
             var min_lvl_tmp = cultureList?.find((value) => value.name === culture).min_active_temperature_level;
             var max_lvl_tmp = cultureList?.find((value) => value.name === culture).max_active_temperature_level;
-            var fact_lvl_tmp = chartDataTemp.at(-1).degreesDaysUsa;
+            var fact_lvl_tmp = chartDataTemp.at(-1)?.degreesDaysUsa || 0;
             console.log(min_lvl_tmp, max_lvl_tmp, fact_lvl_tmp);
             if (fact_lvl_tmp < min_lvl_tmp) {
                 setResultTemp('little');

@@ -70,10 +70,10 @@ const CornPage = () => {
                 10,
                 24
             )
-            .then(({ chart }) => {
+            .then(({ chart = {} }) => {
                 setChartDataIncTemp(
                     getChartData(
-                        Object.values(chart).length
+                        chart && Object.values(chart).length
                             ? {
                                   degreesDays: Object.values(chart).map(({ degree_days }) => Number(degree_days)),
                                   degreesDaysUsa: Object.values(chart).map(({ degree_days_usa }) => Number(degree_days_usa))
@@ -83,7 +83,7 @@ const CornPage = () => {
                     )
                 );
                 let tableData = [];
-                Object.keys(chart).forEach((value, index) => {
+                Object.keys(chart || {}).forEach((value, index) => {
                     tableData.push({
                         id: index,
                         dateTime: Date.parse(value),
